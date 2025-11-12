@@ -1,0 +1,501 @@
+{
+  "instruction_set": "AArch64 (ARM 64-bit)",
+  "categories": {
+    "data_processing": {
+      "arithmetic": [
+        {
+          "mnemonic": "add",
+          "name": "Add",
+          "format": "ADD <Xd|Wd>, <Xn|Wn>, <Xm|Wm>{, <extend> {#<amount>}}",
+          "description": "加法运算，将两个寄存器的值相加",
+          "flags_affected": ["N", "Z", "C", "V"],
+          "example": "add w0, w2, w0"
+        },
+        {
+          "mnemonic": "sub",
+          "name": "Subtract",
+          "format": "SUB <Xd|Wd>, <Xn|Wn>, <Xm|Wm|#imm>",
+          "description": "减法运算，从第一个操作数减去第二个操作数",
+          "flags_affected": ["N", "Z", "C", "V"],
+          "example": "sub sp, sp, #0x30"
+        },
+        {
+          "mnemonic": "mul",
+          "name": "Multiply",
+          "format": "MUL <Xd|Wd>, <Xn|Wn>, <Xm|Wm>",
+          "description": "乘法运算，两个寄存器值相乘",
+          "flags_affected": [],
+          "example": "mul w2, w2, w0"
+        },
+        {
+          "mnemonic": "madd",
+          "name": "Multiply-Add",
+          "format": "MADD <Xd|Wd>, <Xn|Wn>, <Xm|Wm>, <Xa|Wa>",
+          "description": "乘加运算，Xd = Xa + Xn * Xm",
+          "flags_affected": [],
+          "example": "madd x0, x1, x2, x3"
+        },
+        {
+          "mnemonic": "msub",
+          "name": "Multiply-Subtract",
+          "format": "MSUB <Xd|Wd>, <Xn|Wn>, <Xm|Wm>, <Xa|Wa>",
+          "description": "乘减运算，Xd = Xa - Xn * Xm",
+          "flags_affected": [],
+          "example": "msub x0, x1, x2, x3"
+        }
+      ],
+      "logical": [
+        {
+          "mnemonic": "and",
+          "name": "Bitwise AND",
+          "format": "AND <Xd|Wd>, <Xn|Wn>, <Xm|Wm>{, <shift> #<amount>}",
+          "description": "按位与运算",
+          "flags_affected": ["N", "Z"],
+          "example": "and x0, x1, x2"
+        },
+        {
+          "mnemonic": "orr",
+          "name": "Bitwise OR",
+          "format": "ORR <Xd|Wd>, <Xn|Wn>, <Xm|Wm>{, <shift> #<amount>}",
+          "description": "按位或运算",
+          "flags_affected": ["N", "Z"],
+          "example": "orr x0, x1, x2"
+        },
+        {
+          "mnemonic": "eor",
+          "name": "Bitwise Exclusive OR",
+          "format": "EOR <Xd|Wd>, <Xn|Wn>, <Xm|Wm>{, <shift> #<amount>}",
+          "description": "按位异或运算",
+          "flags_affected": ["N", "Z"],
+          "example": "eor x0, x1, x2"
+        }
+      ],
+      "shift": [
+        {
+          "mnemonic": "lsl",
+          "name": "Logical Shift Left",
+          "format": "LSL <Xd|Wd>, <Xn|Wn>, #<shift>",
+          "description": "逻辑左移",
+          "flags_affected": ["N", "Z", "C"],
+          "example": "lsl x0, x0, #3"
+        },
+        {
+          "mnemonic": "lsr",
+          "name": "Logical Shift Right",
+          "format": "LSR <Xd|Wd>, <Xn|Wn>, #<shift>",
+          "description": "逻辑右移",
+          "flags_affected": ["N", "Z", "C"],
+          "example": "lsr x0, x0, #3"
+        },
+        {
+          "mnemonic": "asr",
+          "name": "Arithmetic Shift Right",
+          "format": "ASR <Xd|Wd>, <Xn|Wn>, #<shift>",
+          "description": "算术右移（保留符号位）",
+          "flags_affected": ["N", "Z", "C"],
+          "example": "asr x0, x0, #3"
+        }
+      ]
+    },
+    "load_store": {
+      "load": [
+        {
+          "mnemonic": "ldr",
+          "name": "Load Register",
+          "format": "LDR <Xt|Wt>, [<Xn|SP>{, #<imm>}]",
+          "description": "从内存加载数据到寄存器",
+          "variants": {
+            "ldr_x": "加载64位数据",
+            "ldr_w": "加载32位数据"
+          },
+          "example": "ldr x0, [sp, #8]"
+        },
+        {
+          "mnemonic": "ldrb",
+          "name": "Load Register Byte",
+          "format": "LDRB <Wt>, [<Xn|SP>{, #<imm>}]",
+          "description": "从内存加载一个字节到寄存器",
+          "example": "ldrb w0, [x1, #5]"
+        },
+        {
+          "mnemonic": "ldrh",
+          "name": "Load Register Halfword",
+          "format": "LDRH <Wt>, [<Xn|SP>{, #<imm>}]",
+          "description": "从内存加载半字（16位）到寄存器",
+          "example": "ldrh w0, [x1, #10]"
+        },
+        {
+          "mnemonic": "ldp",
+          "name": "Load Pair of Registers",
+          "format": "LDP <Xt1>, <Xt2>, [<Xn|SP>{, #<imm>}]",
+          "description": "从内存加载两个寄存器",
+          "example": "ldp x29, x30, [sp], #64"
+        }
+      ],
+      "store": [
+        {
+          "mnemonic": "str",
+          "name": "Store Register",
+          "format": "STR <Xt|Wt>, [<Xn|SP>{, #<imm>}]",
+          "description": "将寄存器数据存储到内存",
+          "variants": {
+            "str_x": "存储64位数据",
+            "str_w": "存储32位数据"
+          },
+          "example": "str x0, [sp, #8]"
+        },
+        {
+          "mnemonic": "strb",
+          "name": "Store Register Byte",
+          "format": "STRB <Wt>, [<Xn|SP>{, #<imm>}]",
+          "description": "将寄存器的一个字节存储到内存",
+          "example": "strb w0, [x1, #5]"
+        },
+        {
+          "mnemonic": "strh",
+          "name": "Store Register Halfword",
+          "format": "STRH <Wt>, [<Xn|SP>{, #<imm>}]",
+          "description": "将寄存器的半字（16位）存储到内存",
+          "example": "strh w0, [x1, #10]"
+        },
+        {
+          "mnemonic": "stp",
+          "name": "Store Pair of Registers",
+          "format": "STP <Xt1>, <Xt2>, [<Xn|SP>{, #<imm>}]",
+          "description": "将两个寄存器存储到内存",
+          "example": "stp x29, x30, [sp, #-64]!"
+        }
+      ]
+    },
+    "branch": {
+      "unconditional": [
+        {
+          "mnemonic": "b",
+          "name": "Branch",
+          "format": "B <label>",
+          "description": "无条件跳转到指定标签",
+          "example": "b 150"
+        },
+        {
+          "mnemonic": "bl",
+          "name": "Branch with Link",
+          "format": "BL <label>",
+          "description": "跳转并保存返回地址到X30（链接寄存器）",
+          "example": "bl 2830"
+        },
+        {
+          "mnemonic": "br",
+          "name": "Branch to Register",
+          "format": "BR <Xn>",
+          "description": "跳转到寄存器中的地址",
+          "example": "br x0"
+        },
+        {
+          "mnemonic": "ret",
+          "name": "Return from subroutine",
+          "format": "RET {<Xn>}",
+          "description": "从子程序返回，默认使用X30",
+          "example": "ret"
+        }
+      ],
+      "conditional": [
+        {
+          "mnemonic": "b.eq",
+          "name": "Branch if Equal",
+          "format": "B.EQ <label>",
+          "description": "如果相等则跳转（Z=1）",
+          "condition": "Z == 1",
+          "example": "b.eq 24"
+        },
+        {
+          "mnemonic": "b.ne",
+          "name": "Branch if Not Equal",
+          "format": "B.NE <label>",
+          "description": "如果不相等则跳转（Z=0）",
+          "condition": "Z == 0",
+          "example": "b.ne 2c"
+        },
+        {
+          "mnemonic": "b.cs",
+          "name": "Branch if Carry Set",
+          "format": "B.CS <label>",
+          "description": "如果进位标志置位则跳转（C=1）",
+          "condition": "C == 1",
+          "example": "b.cs 100"
+        },
+        {
+          "mnemonic": "b.cc",
+          "name": "Branch if Carry Clear",
+          "format": "B.CC <label>",
+          "description": "如果进位标志清零则跳转（C=0）",
+          "condition": "C == 0",
+          "example": "b.cc a4",
+          "aliases": ["b.lo", "b.ul", "b.last"]
+        },
+        {
+          "mnemonic": "b.mi",
+          "name": "Branch if Minus",
+          "format": "B.MI <label>",
+          "description": "如果结果为负则跳转（N=1）",
+          "condition": "N == 1",
+          "example": "b.mi 200"
+        },
+        {
+          "mnemonic": "b.pl",
+          "name": "Branch if Plus",
+          "format": "B.PL <label>",
+          "description": "如果结果为正或零则跳转（N=0）",
+          "condition": "N == 0",
+          "example": "b.pl 300"
+        },
+        {
+          "mnemonic": "b.vs",
+          "name": "Branch if Overflow Set",
+          "format": "B.VS <label>",
+          "description": "如果溢出标志置位则跳转（V=1）",
+          "condition": "V == 1",
+          "example": "b.vs 400"
+        },
+        {
+          "mnemonic": "b.vc",
+          "name": "Branch if Overflow Clear",
+          "format": "B.VC <label>",
+          "description": "如果溢出标志清零则跳转（V=0）",
+          "condition": "V == 0",
+          "example": "b.vc 500"
+        },
+        {
+          "mnemonic": "b.hi",
+          "name": "Branch if Higher (unsigned)",
+          "format": "B.HI <label>",
+          "description": "无符号大于时跳转（C=1 且 Z=0）",
+          "condition": "C == 1 && Z == 0",
+          "example": "b.hi 5c",
+          "aliases": ["b.pmore"]
+        },
+        {
+          "mnemonic": "b.ls",
+          "name": "Branch if Lower or Same (unsigned)",
+          "format": "B.LS <label>",
+          "description": "无符号小于等于时跳转（C=0 或 Z=1）",
+          "condition": "C == 0 || Z == 1",
+          "example": "b.ls 64",
+          "aliases": ["b.plast"]
+        },
+        {
+          "mnemonic": "b.ge",
+          "name": "Branch if Greater or Equal (signed)",
+          "format": "B.GE <label>",
+          "description": "有符号大于等于时跳转（N=V）",
+          "condition": "N == V",
+          "example": "b.ge 600"
+        },
+        {
+          "mnemonic": "b.lt",
+          "name": "Branch if Less Than (signed)",
+          "format": "B.LT <label>",
+          "description": "有符号小于时跳转（N!=V）",
+          "condition": "N != V",
+          "example": "b.lt 700"
+        },
+        {
+          "mnemonic": "b.gt",
+          "name": "Branch if Greater Than (signed)",
+          "format": "B.GT <label>",
+          "description": "有符号大于时跳转（Z=0 且 N=V）",
+          "condition": "Z == 0 && N == V",
+          "example": "b.gt 800"
+        },
+        {
+          "mnemonic": "b.le",
+          "name": "Branch if Less or Equal (signed)",
+          "format": "B.LE <label>",
+          "description": "有符号小于等于时跳转（Z=1 或 N!=V）",
+          "condition": "Z == 1 || N != V",
+          "example": "b.le 900"
+        }
+      ],
+      "compare_and_branch": [
+        {
+          "mnemonic": "cbz",
+          "name": "Compare and Branch if Zero",
+          "format": "CBZ <Xt|Wt>, <label>",
+          "description": "如果寄存器值为零则跳转",
+          "example": "cbz x0, 100"
+        },
+        {
+          "mnemonic": "cbnz",
+          "name": "Compare and Branch if Not Zero",
+          "format": "CBNZ <Xt|Wt>, <label>",
+          "description": "如果寄存器值不为零则跳转",
+          "example": "cbnz x0, 200"
+        }
+      ]
+    },
+    "comparison": [
+      {
+        "mnemonic": "cmp",
+        "name": "Compare",
+        "format": "CMP <Xn|Wn>, <Xm|Wm|#imm>",
+        "description": "比较两个值，设置条件标志（相当于 SUB 但不保存结果）",
+        "flags_affected": ["N", "Z", "C", "V"],
+        "example": "cmp x0, #0x0"
+      },
+      {
+        "mnemonic": "cmn",
+        "name": "Compare Negative",
+        "format": "CMN <Xn|Wn>, <Xm|Wm|#imm>",
+        "description": "比较和负数，设置条件标志（相当于 ADD 但不保存结果）",
+        "flags_affected": ["N", "Z", "C", "V"],
+        "example": "cmn x0, #5"
+      },
+      {
+        "mnemonic": "tst",
+        "name": "Test bits",
+        "format": "TST <Xn|Wn>, <Xm|Wm|#imm>",
+        "description": "测试位（相当于 AND 但不保存结果）",
+        "flags_affected": ["N", "Z"],
+        "example": "tst x0, #0xff"
+      }
+    ],
+    "move": [
+      {
+        "mnemonic": "mov",
+        "name": "Move",
+        "format": "MOV <Xd|Wd>, <Xm|Wm|#imm>",
+        "description": "移动数据到寄存器",
+        "example": "mov w0, #0x0"
+      },
+      {
+        "mnemonic": "movz",
+        "name": "Move with Zero",
+        "format": "MOVZ <Xd|Wd>, #<imm>{, LSL #<shift>}",
+        "description": "移动立即数并将其他位清零",
+        "example": "movz x0, #0x1234"
+      },
+      {
+        "mnemonic": "movk",
+        "name": "Move with Keep",
+        "format": "MOVK <Xd|Wd>, #<imm>{, LSL #<shift>}",
+        "description": "移动立即数但保持其他位不变",
+        "example": "movk x0, #0x5678, lsl #16"
+      },
+      {
+        "mnemonic": "movn",
+        "name": "Move with NOT",
+        "format": "MOVN <Xd|Wd>, #<imm>{, LSL #<shift>}",
+        "description": "移动立即数的反码",
+        "example": "movn x0, #0xff"
+      }
+    ],
+    "system": [
+      {
+        "mnemonic": "nop",
+        "name": "No Operation",
+        "format": "NOP",
+        "description": "空操作，不执行任何动作",
+        "example": "nop"
+      },
+      {
+        "mnemonic": "svc",
+        "name": "Supervisor Call",
+        "format": "SVC #<imm>",
+        "description": "系统调用，触发异常进入操作系统",
+        "example": "svc #0"
+      },
+      {
+        "mnemonic": "hlt",
+        "name": "Halt",
+        "format": "HLT #<imm>",
+        "description": "停机指令",
+        "example": "hlt #0"
+      },
+      {
+        "mnemonic": "brk",
+        "name": "Breakpoint",
+        "format": "BRK #<imm>",
+        "description": "断点指令，用于调试",
+        "example": "brk #0"
+      }
+    ],
+    "special_registers": [
+      {
+        "mnemonic": "mrs",
+        "name": "Move to Register from System register",
+        "format": "MRS <Xt>, <systemreg>",
+        "description": "从系统寄存器读取到通用寄存器",
+        "example": "mrs x0, NZCV"
+      },
+      {
+        "mnemonic": "msr",
+        "name": "Move to System register from Register",
+        "format": "MSR <systemreg>, <Xt>",
+        "description": "从通用寄存器写入到系统寄存器",
+        "example": "msr NZCV, x0"
+      }
+    ]
+  },
+  "registers": {
+    "general_purpose": {
+      "64bit": ["x0", "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16", "x17", "x18", "x19", "x20", "x21", "x22", "x23", "x24", "x25", "x26", "x27", "x28", "x29", "x30"],
+      "32bit": ["w0", "w1", "w2", "w3", "w4", "w5", "w6", "w7", "w8", "w9", "w10", "w11", "w12", "w13", "w14", "w15", "w16", "w17", "w18", "w19", "w20", "w21", "w22", "w23", "w24", "w25", "w26", "w27", "w28", "w29", "w30"]
+    },
+    "special": {
+      "sp": "Stack Pointer (栈指针)",
+      "x29": "Frame Pointer (帧指针, FP)",
+      "x30": "Link Register (链接寄存器, LR)",
+      "pc": "Program Counter (程序计数器)",
+      "xzr": "Zero Register (零寄存器, 64位)",
+      "wzr": "Zero Register (零寄存器, 32位)"
+    },
+    "flags": {
+      "N": "Negative flag (负数标志)",
+      "Z": "Zero flag (零标志)",
+      "C": "Carry flag (进位标志)",
+      "V": "Overflow flag (溢出标志)"
+    }
+  },
+  "addressing_modes": [
+    {
+      "name": "Base register only",
+      "format": "[Xn]",
+      "description": "基址寄存器寻址",
+      "example": "ldr x0, [x1]"
+    },
+    {
+      "name": "Base plus offset",
+      "format": "[Xn, #imm]",
+      "description": "基址加偏移量寻址",
+      "example": "ldr x0, [sp, #8]"
+    },
+    {
+      "name": "Pre-indexed",
+      "format": "[Xn, #imm]!",
+      "description": "先修改基址再访问",
+      "example": "ldr x0, [x1, #8]!"
+    },
+    {
+      "name": "Post-indexed",
+      "format": "[Xn], #imm",
+      "description": "先访问再修改基址",
+      "example": "ldr x0, [x1], #8"
+    },
+    {
+      "name": "Register offset",
+      "format": "[Xn, Xm]",
+      "description": "基址加寄存器偏移",
+      "example": "ldr x0, [x1, x2]"
+    },
+    {
+      "name": "Extended register offset",
+      "format": "[Xn, Wm, <extend> {#<amount>}]",
+      "description": "基址加扩展寄存器偏移",
+      "example": "ldr x0, [x1, w2, uxtw #3]"
+    }
+  ],
+  "instruction_encoding": {
+    "description": "AArch64 指令编码为 32 位定长指令",
+    "format": "每条指令占用 4 字节（32位）",
+    "endianness": "小端序（Little-endian）"
+  }
+}

@@ -1,0 +1,37 @@
+# Rust
+/target
+**/*.rs.bk
+*.pdb
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Output files
+*.dump
+*.o
+*.out
+*.md
+!README.md
+
+# Test coverage
+*.profraw
+*.profdata
+coverage/
+
+# Documentation
+/doc
+
+# Temporary files
+tmp/
+temp/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
