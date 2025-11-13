@@ -97,49 +97,306 @@ impl AssemblyParser {
 
     /// 解析指令类型
     fn parse_instruction_type(&self, mnemonic: &str) -> Result<InstructionType> {
-        match mnemonic {
-            "add" => Ok(InstructionType::ADD),
-            "sub" => Ok(InstructionType::SUB),
-            "mul" => Ok(InstructionType::MUL),
-            "and" => Ok(InstructionType::AND),
-            "orr" => Ok(InstructionType::ORR),
-            "eor" => Ok(InstructionType::EOR),
-            "lsl" => Ok(InstructionType::LSL),
-            "lsr" => Ok(InstructionType::LSR),
-            "asr" => Ok(InstructionType::ASR),
-            "ldr" => Ok(InstructionType::LDR),
-            "ldrb" => Ok(InstructionType::LDRB),
-            "ldrh" => Ok(InstructionType::LDRH),
-            "ldp" => Ok(InstructionType::LDP),
-            "str" => Ok(InstructionType::STR),
-            "strb" => Ok(InstructionType::STRB),
-            "strh" => Ok(InstructionType::STRH),
-            "stp" => Ok(InstructionType::STP),
-            "b" => Ok(InstructionType::B),
-            "bl" => Ok(InstructionType::BL),
-            "br" => Ok(InstructionType::BR),
-            "ret" => Ok(InstructionType::RET),
-            "b.eq" => Ok(InstructionType::BEQ),
-            "b.ne" => Ok(InstructionType::BNE),
-            "b.hi" => Ok(InstructionType::BHI),
-            "b.ls" => Ok(InstructionType::BLS),
-            "b.cc" | "b.lo" => Ok(InstructionType::BCC),
-            "b.ge" => Ok(InstructionType::BGE),
-            "b.lt" => Ok(InstructionType::BLT),
-            "b.gt" => Ok(InstructionType::BGT),
-            "b.le" => Ok(InstructionType::BLE),
-            "cbz" => Ok(InstructionType::CBZ),
-            "cbnz" => Ok(InstructionType::CBNZ),
-            "cmp" => Ok(InstructionType::CMP),
-            "cmn" => Ok(InstructionType::CMN),
-            "tst" => Ok(InstructionType::TST),
-            "mov" => Ok(InstructionType::MOV),
-            "movz" => Ok(InstructionType::MOVZ),
-            "movk" => Ok(InstructionType::MOVK),
-            "movn" => Ok(InstructionType::MOVN),
-            "nop" => Ok(InstructionType::NOP),
-            _ => Err(InterpreterError::InvalidInstruction(mnemonic.to_string())),
-        }
+        // 先尝试直接匹配常见指令
+        let inst_type = match mnemonic {
+            // 基础算术
+            "add" => InstructionType::ADD,
+            "sub" => InstructionType::SUB,
+            "mul" => InstructionType::MUL,
+            "madd" => InstructionType::MADD,
+            "msub" => InstructionType::MSUB,
+            "sdiv" => InstructionType::SDIV,
+            "udiv" => InstructionType::UDIV,
+            "smull" => InstructionType::SMULL,
+            "umull" => InstructionType::UMULL,
+            "neg" => InstructionType::NEG,
+            "adc" => InstructionType::ADC,
+            "sbc" => InstructionType::SBC,
+            
+            // 逻辑运算
+            "and" => InstructionType::AND,
+            "orr" => InstructionType::ORR,
+            "eor" => InstructionType::EOR,
+            "bic" => InstructionType::BIC,
+            "orn" => InstructionType::ORN,
+            "eon" => InstructionType::EON,
+            "mvn" => InstructionType::MVN,
+            
+            // 移位
+            "lsl" => InstructionType::LSL,
+            "lsr" => InstructionType::LSR,
+            "asr" => InstructionType::ASR,
+            "ror" => InstructionType::ROR,
+            
+            // 位域操作
+            "ubfm" => InstructionType::UBFM,
+            "sbfm" => InstructionType::SBFM,
+            "bfm" => InstructionType::BFM,
+            "bfi" => InstructionType::BFI,
+            "bfxil" => InstructionType::BFXIL,
+            "ubfx" => InstructionType::UBFX,
+            "sbfx" => InstructionType::SBFX,
+            
+            // 反转和位操作
+            "rev" => InstructionType::REV,
+            "rev16" => InstructionType::REV16,
+            "rev32" => InstructionType::REV32,
+            "clz" => InstructionType::CLZ,
+            "cls" => InstructionType::CLS,
+            "rbit" => InstructionType::RBIT,
+            
+            // 加载存储
+            "ldr" => InstructionType::LDR,
+            "ldrb" => InstructionType::LDRB,
+            "ldrh" => InstructionType::LDRH,
+            "ldrsb" => InstructionType::LDRSB,
+            "ldrsh" => InstructionType::LDRSH,
+            "ldrsw" => InstructionType::LDRSW,
+            "ldp" => InstructionType::LDP,
+            "ldur" => InstructionType::LDUR,
+            "ldxr" => InstructionType::LDXR,
+            "ldar" => InstructionType::LDAR,
+            "str" => InstructionType::STR,
+            "strb" => InstructionType::STRB,
+            "strh" => InstructionType::STRH,
+            "stp" => InstructionType::STP,
+            "stur" => InstructionType::STUR,
+            "stxr" => InstructionType::STXR,
+            "stlr" => InstructionType::STLR,
+            
+            // 原子操作
+            "ldadd" => InstructionType::LDADD,
+            "ldaddal" => InstructionType::LDADDAL,
+            "ldclr" => InstructionType::LDCLR,
+            "ldeor" => InstructionType::LDEOR,
+            "ldset" => InstructionType::LDSET,
+            "swp" => InstructionType::SWP,
+            "cas" => InstructionType::CAS,
+            "casal" => InstructionType::CASAL,
+            
+            // 分支
+            "b" => InstructionType::B,
+            "bl" => InstructionType::BL,
+            "br" => InstructionType::BR,
+            "blr" => InstructionType::BLR,
+            "ret" => InstructionType::RET,
+            
+            // 条件分支
+            "b.eq" => InstructionType::BEQ,
+            "b.ne" => InstructionType::BNE,
+            "b.cs" | "b.hs" => InstructionType::BCS,
+            "b.cc" | "b.lo" => InstructionType::BCC,
+            "b.mi" => InstructionType::BMI,
+            "b.pl" => InstructionType::BPL,
+            "b.vs" => InstructionType::BVS,
+            "b.vc" => InstructionType::BVC,
+            "b.hi" => InstructionType::BHI,
+            "b.ls" => InstructionType::BLS,
+            "b.ge" => InstructionType::BGE,
+            "b.lt" => InstructionType::BLT,
+            "b.gt" => InstructionType::BGT,
+            "b.le" => InstructionType::BLE,
+            
+            // 比较和分支
+            "cbz" => InstructionType::CBZ,
+            "cbnz" => InstructionType::CBNZ,
+            "tbz" => InstructionType::TBZ,
+            "tbnz" => InstructionType::TBNZ,
+            
+            // 比较
+            "cmp" => InstructionType::CMP,
+            "cmn" => InstructionType::CMN,
+            "tst" => InstructionType::TST,
+            
+            // 数据移动
+            "mov" => InstructionType::MOV,
+            "movz" => InstructionType::MOVZ,
+            "movk" => InstructionType::MOVK,
+            "movn" => InstructionType::MOVN,
+            
+            // 系统指令
+            "nop" => InstructionType::NOP,
+            "svc" => InstructionType::SVC,
+            "hlt" => InstructionType::HLT,
+            "brk" => InstructionType::BRK,
+            "dmb" => InstructionType::DMB,
+            "dsb" => InstructionType::DSB,
+            "isb" => InstructionType::ISB,
+            "wfe" => InstructionType::WFE,
+            "wfi" => InstructionType::WFI,
+            "yield" => InstructionType::YIELD,
+            
+            // 系统寄存器
+            "mrs" => InstructionType::MRS,
+            "msr" => InstructionType::MSR,
+            
+            // 浮点运算
+            "fadd" => InstructionType::FADD,
+            "fsub" => InstructionType::FSUB,
+            "fmul" => InstructionType::FMUL,
+            "fdiv" => InstructionType::FDIV,
+            "fmadd" => InstructionType::FMADD,
+            "fmsub" => InstructionType::FMSUB,
+            "fneg" => InstructionType::FNEG,
+            "fabs" => InstructionType::FABS,
+            "fsqrt" => InstructionType::FSQRT,
+            "fcmp" => InstructionType::FCMP,
+            "fcmpe" => InstructionType::FCMPE,
+            "fcvt" => InstructionType::FCVT,
+            "fcvtzs" => InstructionType::FCVTZS,
+            "fcvtzu" => InstructionType::FCVTZU,
+            "scvtf" => InstructionType::SCVTF,
+            "ucvtf" => InstructionType::UCVTF,
+            "fmov" => InstructionType::FMOV,
+            
+            // SIMD/NEON
+            "addv" => InstructionType::ADDV,
+            "smaxv" => InstructionType::SMAXV,
+            "sminv" => InstructionType::SMINV,
+            "umaxv" => InstructionType::UMAXV,
+            "ext" => InstructionType::EXT,
+            "zip1" => InstructionType::ZIP1,
+            "zip2" => InstructionType::ZIP2,
+            "uzp1" => InstructionType::UZP1,
+            "trn1" => InstructionType::TRN1,
+            "tbl" => InstructionType::TBL,
+            "tbx" => InstructionType::TBX,
+            "ld1" => InstructionType::LD1,
+            "st1" => InstructionType::ST1,
+            "ld2" => InstructionType::LD2,
+            "st2" => InstructionType::ST2,
+            
+            // 加密扩展
+            "aese" => InstructionType::AESE,
+            "aesd" => InstructionType::AESD,
+            "aesmc" => InstructionType::AESMC,
+            "aesimc" => InstructionType::AESIMC,
+            "sha1c" => InstructionType::SHA1C,
+            "sha1h" => InstructionType::SHA1H,
+            "sha1m" => InstructionType::SHA1M,
+            "sha1p" => InstructionType::SHA1P,
+            "sha256h" => InstructionType::SHA256H,
+            "sha256h2" => InstructionType::SHA256H2,
+            "sha256su0" => InstructionType::SHA256SU0,
+            "sha256su1" => InstructionType::SHA256SU1,
+            
+            // CRC校验
+            "crc32b" => InstructionType::CRC32B,
+            "crc32h" => InstructionType::CRC32H,
+            "crc32w" => InstructionType::CRC32W,
+            "crc32x" => InstructionType::CRC32X,
+            "crc32cb" => InstructionType::CRC32CB,
+            
+            // 指针认证
+            "pacia" => InstructionType::PACIA,
+            "pacda" => InstructionType::PACDA,
+            "autia" => InstructionType::AUTIA,
+            "autda" => InstructionType::AUTDA,
+            
+            // 内存标签
+            "irg" => InstructionType::IRG,
+            "gmi" => InstructionType::GMI,
+            "ldg" => InstructionType::LDG,
+            "stg" => InstructionType::STG,
+            
+            // 条件操作
+            "csel" => InstructionType::CSEL,
+            "csinc" => InstructionType::CSINC,
+            "csinv" => InstructionType::CSINV,
+            "csneg" => InstructionType::CSNEG,
+            "cset" => InstructionType::CSET,
+            "csetm" => InstructionType::CSETM,
+            "cinc" => InstructionType::CINC,
+            "cinv" => InstructionType::CINV,
+            "cneg" => InstructionType::CNEG,
+            "ccmp" => InstructionType::CCMP,
+            "ccmn" => InstructionType::CCMN,
+            
+            // 位域操作
+            "ubfiz" => InstructionType::UBFIZ,
+            "sbfiz" => InstructionType::SBFIZ,
+            "extr" => InstructionType::EXTR,
+            
+            // 浮点高级指令
+            "fmla" => InstructionType::FMLA,
+            "fmls" => InstructionType::FMLS,
+            "fmin" => InstructionType::FMIN,
+            "fmax" => InstructionType::FMAX,
+            "fminnm" => InstructionType::FMINNM,
+            "fmaxnm" => InstructionType::FMAXNM,
+            "fcvtas" => InstructionType::FCVTAS,
+            "fcvtau" => InstructionType::FCVTAU,
+            "fcvtms" => InstructionType::FCVTMS,
+            "fcvtmu" => InstructionType::FCVTMU,
+            "fcvtns" => InstructionType::FCVTNS,
+            "fcvtnu" => InstructionType::FCVTNU,
+            "fcvtps" => InstructionType::FCVTPS,
+            "fcvtpu" => InstructionType::FCVTPU,
+            "frinta" => InstructionType::FRINTA,
+            "frinti" => InstructionType::FRINTI,
+            "frintm" => InstructionType::FRINTM,
+            "frintn" => InstructionType::FRINTN,
+            "frintp" => InstructionType::FRINTP,
+            "frintx" => InstructionType::FRINTX,
+            "frintz" => InstructionType::FRINTZ,
+            
+            // SIMD 数据处理
+            "uaddlv" => InstructionType::UADDLV,
+            "saddlv" => InstructionType::SADDLV,
+            "uminv" => InstructionType::UMINV,
+            "ins" => InstructionType::INS,
+            "dup" => InstructionType::DUP,
+            "uzp2" => InstructionType::UZP2,
+            "trn2" => InstructionType::TRN2,
+            "cnt" => InstructionType::CNT,
+            "sqadd" => InstructionType::SQADD,
+            "uqadd" => InstructionType::UQADD,
+            "sqsub" => InstructionType::SQSUB,
+            "uqsub" => InstructionType::UQSUB,
+            "shl" => InstructionType::SHL,
+            "sshr" => InstructionType::SSHR,
+            "ushr" => InstructionType::USHR,
+            "sxtl" => InstructionType::SXTL,
+            "uxtl" => InstructionType::UXTL,
+            
+            // 原子操作扩展
+            "ldaddh" => InstructionType::LDADDH,
+            "ldaddb" => InstructionType::LDADDB,
+            "ldaddlh" => InstructionType::LDADDLH,
+            "ldaddlb" => InstructionType::LDADDLB,
+            "casa" => InstructionType::CASA,
+            "casb" => InstructionType::CASB,
+            "cash" => InstructionType::CASH,
+            "casp" => InstructionType::CASP,
+            "stadd" => InstructionType::STADD,
+            "staddl" => InstructionType::STADDL,
+            "staddb" => InstructionType::STADDB,
+            "staddh" => InstructionType::STADDH,
+            
+            // 加载/存储独占扩展
+            "ldxrb" => InstructionType::LDXRB,
+            "ldxrh" => InstructionType::LDXRH,
+            "stxrb" => InstructionType::STXRB,
+            "stxrh" => InstructionType::STXRH,
+            "ldaxrb" => InstructionType::LDAXRB,
+            "ldaxrh" => InstructionType::LDAXRH,
+            "stlxrb" => InstructionType::STLXRB,
+            "stlxrh" => InstructionType::STLXRH,
+            "ldxp" => InstructionType::LDXP,
+            "stxp" => InstructionType::STXP,
+            
+            // 异常处理
+            "eret" => InstructionType::ERET,
+            "drps" => InstructionType::DRPS,
+            
+            // PC相对地址
+            "adrp" => InstructionType::ADRP,
+            "adr" => InstructionType::ADR,
+            
+            _ => return Err(InterpreterError::InvalidInstruction(mnemonic.to_string())),
+        };
+        
+        Ok(inst_type)
     }
 
     /// 解析操作数列表

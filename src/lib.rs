@@ -5,6 +5,7 @@
 //! # 模块
 //! 
 //! - `instruction`: 指令定义和指令集
+//! - `instruction_db`: 指令数据库（从 JSON 加载）
 //! - `register`: 寄存器定义和管理
 //! - `parser`: 汇编代码解析器
 //! - `error`: 错误类型定义
@@ -13,6 +14,7 @@
 //! - `table`: Markdown 表格生成器
 
 pub mod instruction;
+pub mod instruction_db;
 pub mod register;
 pub mod parser;
 pub mod error;

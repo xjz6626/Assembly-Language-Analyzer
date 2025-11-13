@@ -1,20 +1,23 @@
 [package]
 name = "alaz"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["xjz"]
-description = "Assembly Language Analyzer - AArch64 汇编语言分析工具，支持多优化级别对比和语义解释"
+description = "AArch64 汇编语言分析工具 - 支持237条指令、多优化级别对比、智能语义解释"
 license = "MIT"
 repository = "https://github.com/xjz6626/Assembly-Language-Analyzer"
 homepage = "https://github.com/xjz6626/Assembly-Language-Analyzer"
 documentation = "https://docs.rs/alaz"
 readme = "README.md"
 keywords = ["aarch64", "arm", "assembly", "objdump", "analyzer"]
-categories = ["development-tools", "parser-implementations"]
+categories = ["development-tools", "parser-implementations", "command-line-utilities"]
 exclude = [
     "target/*",
     "examples/*.dump",
+    "test_dumps/*",
     "*.o",
+    "*.md",
+    "!README.md",
 ]
 
 [[bin]]

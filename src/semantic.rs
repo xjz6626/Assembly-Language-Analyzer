@@ -1,15 +1,86 @@
 //! 汇编指令语义解释器
 //! 
 //! 将汇编指令转换为人类可读的语义描述
+//! 
+//! V2: 基于 JSON 数据库的解耦设计
 
 use crate::instruction::{Instruction, InstructionType, Operand};
+use crate::instruction_db::{InstructionDatabase, InstructionDef};
+use std::sync::OnceLock;
+
+// 全局指令数据库（延迟初始化）
+static INSTRUCTION_DB: OnceLock<InstructionDatabase> = OnceLock::new();
+
+/// 获取指令数据库
+fn get_instruction_db() -> &'static InstructionDatabase {
+    INSTRUCTION_DB.get_or_init(|| {
+        InstructionDatabase::load_embedded()
+            .expect("Failed to load instruction database")
+    })
+}
 
 /// 指令语义解释器
 pub struct SemanticInterpreter;
 
 impl SemanticInterpreter {
-    /// 解释单条指令
+    /// 解释单条指令（新版：优先使用数据库）
     pub fn interpret(instruction: &Instruction) -> String {
+        // 首先尝试从数据库获取指令定义
+        let inst_type_str = format!("{:?}", instruction.instruction_type).to_lowercase();
+        if let Some(def) = get_instruction_db().find_instruction(&inst_type_str) {
+            return Self::interpret_from_db(&def, instruction);
+        }
+        
+        // 回退到旧的硬编码解释（保持向后兼容）
+        Self::interpret_legacy(instruction)
+    }
+
+    /// 从数据库定义生成语义解释
+    fn interpret_from_db(def: &InstructionDef, instruction: &Instruction) -> String {
+        // 使用数据库中的描述作为基础
+        let base_desc = &def.description;
+        
+        // 如果有操作数，尝试生成更详细的解释
+        if !instruction.operands.is_empty() {
+            match def.mnemonic.as_str() {
+                // 三操作数算术/逻辑指令
+                "add" | "sub" | "mul" | "and" | "orr" | "eor" | "bic" => {
+                    if instruction.operands.len() >= 3 {
+                        let dest = Self::operand_name(&instruction.operands[0]);
+                        let src1 = Self::operand_name(&instruction.operands[1]);
+                        let src2 = Self::operand_name(&instruction.operands[2]);
+                        let op = match def.mnemonic.as_str() {
+                            "add" => "+",
+                            "sub" => "-",
+                            "mul" => "×",
+                            "and" => "&",
+                            "orr" => "|",
+                            "eor" => "^",
+                            "bic" => "& ~",
+                            _ => "",
+                        };
+                        return format!("{} = {} {} {}", dest, src1, op, src2);
+                    }
+                }
+                // 加载/存储指令
+                "ldr" | "str" | "ldrb" | "strb" | "ldrh" | "strh" => {
+                    if instruction.operands.len() >= 2 {
+                        let reg = Self::operand_name(&instruction.operands[0]);
+                        let mem = Self::operand_name(&instruction.operands[1]);
+                        let action = if def.mnemonic.starts_with("ld") { "加载" } else { "存储" };
+                        return format!("{} {} {}", action, reg, mem);
+                    }
+                }
+                _ => {}
+            }
+        }
+        
+        // 默认返回数据库中的描述
+        base_desc.clone()
+    }
+
+    /// 旧版硬编码解释（保持向后兼容）
+    fn interpret_legacy(instruction: &Instruction) -> String {
         match instruction.instruction_type {
             InstructionType::ADD => Self::interpret_add(instruction),
             InstructionType::SUB => Self::interpret_sub(instruction),

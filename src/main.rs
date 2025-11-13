@@ -36,7 +36,7 @@ struct Cli {
     command: Commands,
 
     /// 启用详细日志输出
-    #[arg(short, long, global = true)]
+    #[arg(long, global = true)]
     verbose: bool,
 }
 

@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Rust](https://img.shields.io/badge/rust-1.70+-orange.svg)](https://www.rust-lang.org/)
+[![Crates.io](https://img.shields.io/crates/v/alaz.svg)](https://crates.io/crates/alaz)
 
 **ALAZ (Assembly Language Analyzer)** 是一个强大的 AArch64 汇编语言分析工具，用于解析 objdump 输出文件并生成美观的 Markdown 分析报告。
 
@@ -9,11 +10,34 @@
 
 - 🔍 **智能解析**: 自动解析 objdump 输出，提取汇编指令和源代码对应关系
 - 📊 **多级对比**: 支持 O0/O1/O2 三个优化级别的汇编代码对比分析
-- 🎯 **语义解释**: 自动生成每条指令的中文语义解释
+- 🎯 **语义解释**: 基于 JSON 数据库的指令语义解释系统，支持 **237 条 AArch64 指令**
 - 🎨 **美观输出**: 生成格式化的 Markdown 表格，便于阅读和分享
 - 🖥️ **交互模式**: 提供友好的交互式菜单，快速浏览和选择函数
 - 📝 **单文件分析**: 支持对单个 dump 文件进行详细分析
 - ⚡ **高性能**: Rust 编写，解析速度快，资源占用低
+- 🔧 **可扩展**: 基于 JSON 的指令定义，易于添加新指令
+
+## 🎯 支持的指令集
+
+ALAZ v0.1.1 支持 **237 条 AArch64 指令**，涵盖：
+
+### 核心指令集
+- ✅ **数据处理**: 算术、逻辑、移位、位操作（60+条）
+- ✅ **加载/存储**: 各种寻址模式、成对操作（30+条）
+- ✅ **分支控制**: 条件/无条件跳转、函数调用（20+条）
+- ✅ **条件操作**: `csel`, `csinc`, `cset` 等（11条）- **新增**
+
+### 高级特性
+- ✅ **浮点运算**: 基本运算、融合乘加 `fmla`/`fmls`、转换、取整（35+条）
+- ✅ **SIMD/NEON**: 向量运算、累加、饱和运算、位计数（40+条）
+- ✅ **原子操作**: `ldadd`, `cas`, `swp` 及字节/半字变体（24+条）
+- ✅ **加密扩展**: AES (`aese`/`aesd`), SHA-1, SHA-256（10+条）
+- ✅ **CRC 校验**: `crc32b/h/w/x` 系列（5条）
+- ✅ **指针认证**: PAC/AUT 指令（4条）
+- ✅ **内存标签**: MTE 指令（4条）
+- ✅ **PC相对寻址**: `adr`/`adrp` - **新增**
+- ✅ **位域操作**: `ubfiz`, `sbfiz`, `extr` - **新增**
+- ✅ **系统控制**: 内存屏障、异常处理（10+条）
 
 ## 📦 安装
 
@@ -267,11 +291,45 @@ ALAZ 会为每条指令生成详细的中文语义解释：
 | `sub sp, sp, #0x30` | 分配48字节栈空间 |
 | `stp x29, x30, [sp, #-64]!` | 将x29和x30压栈（前索引，先sp-=64再存储） |
 | `ldr x0, [sp, #24]` | 从sp+24地址加载8字节到x0 |
-| `add w0, w1, w2` | 将w1和w2相加，结果存入w0 |
+| `add w0, w1, w2` | w0 = w1 + w2 |
+| `csel x0, x1, x2, eq` | 条件选择，如果相等选择x1，否则选择x2 |
+| `adrp x0, label` | 将PC相对页地址加载到x0（用于访问全局变量） |
+| `fmla v0.4s, v1.4s, v2.4s` | 浮点融合乘加，v0 = v0 + v1 * v2 |
+| `ldadd w1, w2, [x0]` | 原子加法，将w1的值加到内存[x0]，原值加载到w2 |
 | `cmp x0, #0` | 比较x0与0，更新条件标志 |
 | `b.eq 1234` | 如果相等(Z=1)则跳转到0x1234 |
 | `bl function` | 调用函数（保存返回地址到LR） |
 | `ret` | 返回（跳转到LR保存的地址） |
+
+## 🆕 v0.1.1 更新内容
+
+### 新增指令支持（+78条）
+
+- **条件操作**: `csel`, `csinc`, `csinv`, `csneg`, `cset`, `csetm`, `cinc`, `cinv`, `cneg`, `ccmp`, `ccmn`
+- **PC相对寻址**: `adr`, `adrp` - 访问全局变量和 GOT/PLT
+- **位域操作**: `ubfiz`, `sbfiz`, `extr` - 高效位操作
+- **浮点高级指令** (21条):
+  - 融合乘加: `fmla`, `fmls`
+  - 最值: `fmin`, `fmax`, `fminnm`, `fmaxnm`
+  - 转换: `fcvtas`, `fcvtau`, `fcvtms`, `fcvtmu`, `fcvtns`, `fcvtnu`, `fcvtps`, `fcvtpu`
+  - 取整: `frinta`, `frinti`, `frintm`, `frintn`, `frintp`, `frintx`, `frintz`
+- **SIMD 数据处理** (17条):
+  - 向量累加: `uaddlv`, `saddlv`
+  - 元素操作: `ins`, `dup`, `cnt`
+  - 饱和运算: `sqadd`, `uqadd`, `sqsub`, `uqsub`
+  - 移位: `shl`, `sshr`, `ushr`
+  - 扩展: `sxtl`, `uxtl`
+  - 交错: `uzp2`, `trn2`
+- **原子操作扩展** (12条): `ldaddh`, `ldaddb`, `casa`, `casb`, `cash`, `casp`, `stadd`, 等
+- **独占访问扩展** (10条): `ldxrb`, `ldxrh`, `stxrb`, `stxrh`, `ldaxrb`, `ldaxrh`, `ldxp`, `stxp`, 等
+- **异常处理**: `eret`, `drps`
+
+### 改进
+
+- ✅ 修复了指令数据库加载问题（从 115 条扩展到 237 条）
+- ✅ 优化了 JSON 数据库结构，支持灵活的指令分类
+- ✅ 改进了语义解释系统，更准确的中文描述
+- ✅ 增强了 Parser 对复杂指令格式的支持
 
 ## 📚 使用场景
 
@@ -305,12 +363,14 @@ alaz analyze critical_function security_lib
 
 欢迎贡献！以下是一些可以改进的方向：
 
-- [ ] 添加更多 AArch64 指令支持
-- [ ] 支持浮点和 SIMD 指令
-- [ ] 添加性能统计功能
+- [x] ~~添加更多 AArch64 指令支持~~ - v0.1.1 已支持 237 条指令
+- [ ] 支持更多浮点和 SIMD 指令变体
+- [ ] 添加 SVE (可伸缩向量扩展) 指令支持
+- [ ] 添加性能统计功能（指令计数、周期估算）
 - [ ] 支持其他架构（x86-64, RISC-V等）
 - [ ] 添加图形化界面
 - [ ] 支持更多输出格式（HTML, PDF等）
+- [ ] 添加指令搜索和过滤功能
 
 ### 提交流程
 
@@ -319,6 +379,13 @@ alaz analyze critical_function security_lib
 3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
 5. 开启 Pull Request
+
+## 📊 项目统计
+
+- **指令支持**: 237 条 AArch64 指令
+- **代码行数**: ~3000+ 行 Rust 代码
+- **测试覆盖**: 核心功能单元测试
+- **文档**: 完整的 JSON 指令数据库
 
 ## 📄 许可证
 

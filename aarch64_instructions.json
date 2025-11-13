@@ -42,6 +42,62 @@
           "description": "乘减运算，Xd = Xa - Xn * Xm",
           "flags_affected": [],
           "example": "msub x0, x1, x2, x3"
+        },
+        {
+          "mnemonic": "sdiv",
+          "name": "Signed Divide",
+          "format": "SDIV <Xd|Wd>, <Xn|Wn>, <Xm|Wm>",
+          "description": "有符号除法，Xd = Xn / Xm",
+          "flags_affected": [],
+          "example": "sdiv w0, w1, w2"
+        },
+        {
+          "mnemonic": "udiv",
+          "name": "Unsigned Divide",
+          "format": "UDIV <Xd|Wd>, <Xn|Wn>, <Xm|Wm>",
+          "description": "无符号除法，Xd = Xn / Xm",
+          "flags_affected": [],
+          "example": "udiv w0, w1, w2"
+        },
+        {
+          "mnemonic": "smull",
+          "name": "Signed Multiply Long",
+          "format": "SMULL <Xd>, <Wn>, <Wm>",
+          "description": "有符号长乘法，结果为64位",
+          "flags_affected": [],
+          "example": "smull x0, w1, w2"
+        },
+        {
+          "mnemonic": "umull",
+          "name": "Unsigned Multiply Long",
+          "format": "UMULL <Xd>, <Wn>, <Wm>",
+          "description": "无符号长乘法，结果为64位",
+          "flags_affected": [],
+          "example": "umull x0, w1, w2"
+        },
+        {
+          "mnemonic": "neg",
+          "name": "Negate",
+          "format": "NEG <Xd|Wd>, <Xm|Wm>",
+          "description": "取反运算，Xd = 0 - Xm",
+          "flags_affected": [],
+          "example": "neg w0, w1"
+        },
+        {
+          "mnemonic": "adc",
+          "name": "Add with Carry",
+          "format": "ADC <Xd|Wd>, <Xn|Wn>, <Xm|Wm>",
+          "description": "带进位加法，Xd = Xn + Xm + C",
+          "flags_affected": ["N", "Z", "C", "V"],
+          "example": "adc x0, x1, x2"
+        },
+        {
+          "mnemonic": "sbc",
+          "name": "Subtract with Carry",
+          "format": "SBC <Xd|Wd>, <Xn|Wn>, <Xm|Wm>",
+          "description": "带借位减法，Xd = Xn - Xm - !C",
+          "flags_affected": ["N", "Z", "C", "V"],
+          "example": "sbc x0, x1, x2"
         }
       ],
       "logical": [
@@ -68,6 +124,38 @@
           "description": "按位异或运算",
           "flags_affected": ["N", "Z"],
           "example": "eor x0, x1, x2"
+        },
+        {
+          "mnemonic": "bic",
+          "name": "Bitwise Bit Clear",
+          "format": "BIC <Xd|Wd>, <Xn|Wn>, <Xm|Wm>{, <shift> #<amount>}",
+          "description": "位清除运算，Xd = Xn AND NOT Xm",
+          "flags_affected": ["N", "Z"],
+          "example": "bic x0, x1, x2"
+        },
+        {
+          "mnemonic": "orn",
+          "name": "Bitwise OR NOT",
+          "format": "ORN <Xd|Wd>, <Xn|Wn>, <Xm|Wm>{, <shift> #<amount>}",
+          "description": "按位或非运算，Xd = Xn OR NOT Xm",
+          "flags_affected": ["N", "Z"],
+          "example": "orn x0, x1, x2"
+        },
+        {
+          "mnemonic": "eon",
+          "name": "Bitwise Exclusive OR NOT",
+          "format": "EON <Xd|Wd>, <Xn|Wn>, <Xm|Wm>{, <shift> #<amount>}",
+          "description": "按位异或非运算，Xd = Xn EOR NOT Xm",
+          "flags_affected": ["N", "Z"],
+          "example": "eon x0, x1, x2"
+        },
+        {
+          "mnemonic": "mvn",
+          "name": "Bitwise NOT",
+          "format": "MVN <Xd|Wd>, <Xm|Wm>{, <shift> #<amount>}",
+          "description": "按位取反运算",
+          "flags_affected": [],
+          "example": "mvn x0, x1"
         }
       ],
       "shift": [
@@ -94,6 +182,122 @@
           "description": "算术右移（保留符号位）",
           "flags_affected": ["N", "Z", "C"],
           "example": "asr x0, x0, #3"
+        },
+        {
+          "mnemonic": "ror",
+          "name": "Rotate Right",
+          "format": "ROR <Xd|Wd>, <Xs|Ws>, #<shift>",
+          "description": "循环右移",
+          "flags_affected": ["N", "Z", "C"],
+          "example": "ror x0, x0, #3"
+        }
+      ],
+      "bitfield": [
+        {
+          "mnemonic": "ubfm",
+          "name": "Unsigned Bitfield Move",
+          "format": "UBFM <Xd|Wd>, <Xn|Wn>, #<immr>, #<imms>",
+          "description": "无符号位域移动",
+          "flags_affected": [],
+          "example": "ubfm x0, x1, #8, #15"
+        },
+        {
+          "mnemonic": "sbfm",
+          "name": "Signed Bitfield Move",
+          "format": "SBFM <Xd|Wd>, <Xn|Wn>, #<immr>, #<imms>",
+          "description": "有符号位域移动",
+          "flags_affected": [],
+          "example": "sbfm x0, x1, #8, #15"
+        },
+        {
+          "mnemonic": "bfm",
+          "name": "Bitfield Move",
+          "format": "BFM <Xd|Wd>, <Xn|Wn>, #<immr>, #<imms>",
+          "description": "位域移动（保持目标寄存器其他位不变）",
+          "flags_affected": [],
+          "example": "bfm x0, x1, #8, #15"
+        },
+        {
+          "mnemonic": "bfi",
+          "name": "Bitfield Insert",
+          "format": "BFI <Xd|Wd>, <Xn|Wn>, #<lsb>, #<width>",
+          "description": "位域插入",
+          "flags_affected": [],
+          "example": "bfi x0, x1, #8, #8"
+        },
+        {
+          "mnemonic": "bfxil",
+          "name": "Bitfield Extract and Insert Low",
+          "format": "BFXIL <Xd|Wd>, <Xn|Wn>, #<lsb>, #<width>",
+          "description": "位域提取并插入低位",
+          "flags_affected": [],
+          "example": "bfxil x0, x1, #8, #8"
+        },
+        {
+          "mnemonic": "ubfx",
+          "name": "Unsigned Bitfield Extract",
+          "format": "UBFX <Xd|Wd>, <Xn|Wn>, #<lsb>, #<width>",
+          "description": "无符号位域提取",
+          "flags_affected": [],
+          "example": "ubfx x0, x1, #8, #8"
+        },
+        {
+          "mnemonic": "sbfx",
+          "name": "Signed Bitfield Extract",
+          "format": "SBFX <Xd|Wd>, <Xn|Wn>, #<lsb>, #<width>",
+          "description": "有符号位域提取",
+          "flags_affected": [],
+          "example": "sbfx x0, x1, #8, #8"
+        }
+      ],
+      "reverse": [
+        {
+          "mnemonic": "rev",
+          "name": "Byte-Reverse",
+          "format": "REV <Xd|Wd>, <Xn|Wn>",
+          "description": "字节反转（大小端转换）",
+          "flags_affected": [],
+          "example": "rev x0, x1"
+        },
+        {
+          "mnemonic": "rev16",
+          "name": "Byte-Reverse Halfwords",
+          "format": "REV16 <Xd|Wd>, <Xn|Wn>",
+          "description": "半字内字节反转",
+          "flags_affected": [],
+          "example": "rev16 w0, w1"
+        },
+        {
+          "mnemonic": "rev32",
+          "name": "Byte-Reverse Words",
+          "format": "REV32 <Xd>, <Xn>",
+          "description": "字内字节反转",
+          "flags_affected": [],
+          "example": "rev32 x0, x1"
+        },
+        {
+          "mnemonic": "clz",
+          "name": "Count Leading Zeros",
+          "format": "CLZ <Xd|Wd>, <Xn|Wn>",
+          "description": "计算前导零的数量",
+          "flags_affected": [],
+          "example": "clz w0, w1"
+        },
+        {
+          "mnemonic": "cls",
+          "name": "Count Leading Sign bits",
+          "format": "CLS <Xd|Wd>, <Xn|Wn>",
+          "description": "计算前导符号位的数量",
+          "flags_affected": [],
+          "example": "cls w0, w1"
+        },
+        {
+          "mnemonic": "rbit",
+          "name": "Reverse Bits",
+          "format": "RBIT <Xd|Wd>, <Xn|Wn>",
+          "description": "位反转",
+          "flags_affected": [],
+          "example": "rbit x0, x1"
         }
       ]
     },
@@ -130,6 +334,48 @@
           "format": "LDP <Xt1>, <Xt2>, [<Xn|SP>{, #<imm>}]",
           "description": "从内存加载两个寄存器",
           "example": "ldp x29, x30, [sp], #64"
+        },
+        {
+          "mnemonic": "ldrsb",
+          "name": "Load Register Signed Byte",
+          "format": "LDRSB <Xt|Wt>, [<Xn|SP>{, #<imm>}]",
+          "description": "从内存加载有符号字节并扩展",
+          "example": "ldrsb x0, [x1, #5]"
+        },
+        {
+          "mnemonic": "ldrsh",
+          "name": "Load Register Signed Halfword",
+          "format": "LDRSH <Xt|Wt>, [<Xn|SP>{, #<imm>}]",
+          "description": "从内存加载有符号半字并扩展",
+          "example": "ldrsh x0, [x1, #10]"
+        },
+        {
+          "mnemonic": "ldrsw",
+          "name": "Load Register Signed Word",
+          "format": "LDRSW <Xt>, [<Xn|SP>{, #<imm>}]",
+          "description": "从内存加载有符号字（32位）并扩展到64位",
+          "example": "ldrsw x0, [x1, #16]"
+        },
+        {
+          "mnemonic": "ldur",
+          "name": "Load Register (Unscaled)",
+          "format": "LDUR <Xt|Wt>, [<Xn|SP>{, #<simm>}]",
+          "description": "从内存加载数据（非缩放偏移）",
+          "example": "ldur x0, [sp, #-8]"
+        },
+        {
+          "mnemonic": "ldxr",
+          "name": "Load Exclusive Register",
+          "format": "LDXR <Wt|Xt>, [<Xn|SP>{, #0}]",
+          "description": "独占加载（用于原子操作）",
+          "example": "ldxr w0, [x1]"
+        },
+        {
+          "mnemonic": "ldar",
+          "name": "Load-Acquire Register",
+          "format": "LDAR <Wt|Xt>, [<Xn|SP>{, #0}]",
+          "description": "带获取语义的加载（内存屏障）",
+          "example": "ldar w0, [x1]"
         }
       ],
       "store": [
@@ -150,6 +396,41 @@
           "format": "STRB <Wt>, [<Xn|SP>{, #<imm>}]",
           "description": "将寄存器的一个字节存储到内存",
           "example": "strb w0, [x1, #5]"
+        },
+        {
+          "mnemonic": "strh",
+          "name": "Store Register Halfword",
+          "format": "STRH <Wt>, [<Xn|SP>{, #<imm>}]",
+          "description": "将寄存器的半字（16位）存储到内存",
+          "example": "strh w0, [x1, #10]"
+        },
+        {
+          "mnemonic": "stp",
+          "name": "Store Pair of Registers",
+          "format": "STP <Xt1>, <Xt2>, [<Xn|SP>{, #<imm>}]",
+          "description": "将两个寄存器存储到内存",
+          "example": "stp x29, x30, [sp, #-64]!"
+        },
+        {
+          "mnemonic": "stur",
+          "name": "Store Register (Unscaled)",
+          "format": "STUR <Xt|Wt>, [<Xn|SP>{, #<simm>}]",
+          "description": "将寄存器存储到内存（非缩放偏移）",
+          "example": "stur x0, [sp, #-8]"
+        },
+        {
+          "mnemonic": "stxr",
+          "name": "Store Exclusive Register",
+          "format": "STXR <Ws>, <Wt|Xt>, [<Xn|SP>{, #0}]",
+          "description": "独占存储（用于原子操作）",
+          "example": "stxr w2, w0, [x1]"
+        },
+        {
+          "mnemonic": "stlr",
+          "name": "Store-Release Register",
+          "format": "STLR <Wt|Xt>, [<Xn|SP>{, #0}]",
+          "description": "带释放语义的存储（内存屏障）",
+          "example": "stlr w0, [x1]"
         },
         {
           "mnemonic": "strh",
@@ -416,8 +697,292 @@
         "format": "BRK #<imm>",
         "description": "断点指令，用于调试",
         "example": "brk #0"
+      },
+      {
+        "mnemonic": "dmb",
+        "name": "Data Memory Barrier",
+        "format": "DMB <option>",
+        "description": "数据内存屏障，确保内存访问顺序",
+        "example": "dmb sy"
+      },
+      {
+        "mnemonic": "dsb",
+        "name": "Data Synchronization Barrier",
+        "format": "DSB <option>",
+        "description": "数据同步屏障",
+        "example": "dsb sy"
+      },
+      {
+        "mnemonic": "isb",
+        "name": "Instruction Synchronization Barrier",
+        "format": "ISB {<option>}",
+        "description": "指令同步屏障",
+        "example": "isb"
+      },
+      {
+        "mnemonic": "mrs",
+        "name": "Move to Register from System",
+        "format": "MRS <Xt>, <systemreg>",
+        "description": "从系统寄存器读取到通用寄存器",
+        "example": "mrs x0, nzcv"
+      },
+      {
+        "mnemonic": "msr",
+        "name": "Move to System from Register",
+        "format": "MSR <systemreg>, <Xt>",
+        "description": "从通用寄存器写入到系统寄存器",
+        "example": "msr nzcv, x0"
+      },
+      {
+        "mnemonic": "wfe",
+        "name": "Wait For Event",
+        "format": "WFE",
+        "description": "等待事件",
+        "example": "wfe"
+      },
+      {
+        "mnemonic": "wfi",
+        "name": "Wait For Interrupt",
+        "format": "WFI",
+        "description": "等待中断",
+        "example": "wfi"
+      },
+      {
+        "mnemonic": "yield",
+        "name": "Yield",
+        "format": "YIELD",
+        "description": "让出处理器",
+        "example": "yield"
       }
     ],
+    "floating_point": {
+      "arithmetic": [
+        {
+          "mnemonic": "fadd",
+          "name": "Floating-point Add",
+          "format": "FADD <Sd|Dd>, <Sn|Dn>, <Sm|Dm>",
+          "description": "浮点加法",
+          "example": "fadd d0, d1, d2"
+        },
+        {
+          "mnemonic": "fsub",
+          "name": "Floating-point Subtract",
+          "format": "FSUB <Sd|Dd>, <Sn|Dn>, <Sm|Dm>",
+          "description": "浮点减法",
+          "example": "fsub d0, d1, d2"
+        },
+        {
+          "mnemonic": "fmul",
+          "name": "Floating-point Multiply",
+          "format": "FMUL <Sd|Dd>, <Sn|Dn>, <Sm|Dm>",
+          "description": "浮点乘法",
+          "example": "fmul d0, d1, d2"
+        },
+        {
+          "mnemonic": "fdiv",
+          "name": "Floating-point Divide",
+          "format": "FDIV <Sd|Dd>, <Sn|Dn>, <Sm|Dm>",
+          "description": "浮点除法",
+          "example": "fdiv d0, d1, d2"
+        },
+        {
+          "mnemonic": "fmadd",
+          "name": "Floating-point Multiply-Add",
+          "format": "FMADD <Sd|Dd>, <Sn|Dn>, <Sm|Dm>, <Sa|Da>",
+          "description": "浮点乘加，Sd = Sa + Sn * Sm",
+          "example": "fmadd d0, d1, d2, d3"
+        },
+        {
+          "mnemonic": "fmsub",
+          "name": "Floating-point Multiply-Subtract",
+          "format": "FMSUB <Sd|Dd>, <Sn|Dn>, <Sm|Dm>, <Sa|Da>",
+          "description": "浮点乘减，Sd = Sa - Sn * Sm",
+          "example": "fmsub d0, d1, d2, d3"
+        },
+        {
+          "mnemonic": "fneg",
+          "name": "Floating-point Negate",
+          "format": "FNEG <Sd|Dd>, <Sn|Dn>",
+          "description": "浮点取负",
+          "example": "fneg d0, d1"
+        },
+        {
+          "mnemonic": "fabs",
+          "name": "Floating-point Absolute",
+          "format": "FABS <Sd|Dd>, <Sn|Dn>",
+          "description": "浮点绝对值",
+          "example": "fabs d0, d1"
+        },
+        {
+          "mnemonic": "fsqrt",
+          "name": "Floating-point Square Root",
+          "format": "FSQRT <Sd|Dd>, <Sn|Dn>",
+          "description": "浮点平方根",
+          "example": "fsqrt d0, d1"
+        }
+      ],
+      "compare": [
+        {
+          "mnemonic": "fcmp",
+          "name": "Floating-point Compare",
+          "format": "FCMP <Sn|Dn>, <Sm|Dm|#0.0>",
+          "description": "浮点比较",
+          "example": "fcmp d0, d1"
+        },
+        {
+          "mnemonic": "fcmpe",
+          "name": "Floating-point Compare with Exception",
+          "format": "FCMPE <Sn|Dn>, <Sm|Dm|#0.0>",
+          "description": "浮点比较（带异常）",
+          "example": "fcmpe d0, #0.0"
+        }
+      ],
+      "conversion": [
+        {
+          "mnemonic": "fcvt",
+          "name": "Floating-point Convert",
+          "format": "FCVT <Sd|Dd|Hd>, <Sn|Dn|Hn>",
+          "description": "浮点格式转换",
+          "example": "fcvt d0, s1"
+        },
+        {
+          "mnemonic": "fcvtzs",
+          "name": "Floating-point Convert to Signed integer, round toward Zero",
+          "format": "FCVTZS <Wd|Xd>, <Sn|Dn>",
+          "description": "浮点转有符号整数（向零舍入）",
+          "example": "fcvtzs w0, d1"
+        },
+        {
+          "mnemonic": "fcvtzu",
+          "name": "Floating-point Convert to Unsigned integer, round toward Zero",
+          "format": "FCVTZU <Wd|Xd>, <Sn|Dn>",
+          "description": "浮点转无符号整数（向零舍入）",
+          "example": "fcvtzu w0, d1"
+        },
+        {
+          "mnemonic": "scvtf",
+          "name": "Signed integer Convert to Floating-point",
+          "format": "SCVTF <Sd|Dd>, <Wn|Xn>",
+          "description": "有符号整数转浮点",
+          "example": "scvtf d0, w1"
+        },
+        {
+          "mnemonic": "ucvtf",
+          "name": "Unsigned integer Convert to Floating-point",
+          "format": "UCVTF <Sd|Dd>, <Wn|Xn>",
+          "description": "无符号整数转浮点",
+          "example": "ucvtf d0, w1"
+        }
+      ],
+      "move": [
+        {
+          "mnemonic": "fmov",
+          "name": "Floating-point Move",
+          "format": "FMOV <Sd|Dd>, <Sn|Dn|#imm>",
+          "description": "浮点寄存器间移动或加载立即数",
+          "example": "fmov d0, d1"
+        },
+        {
+          "mnemonic": "fmov",
+          "name": "Floating-point Move to/from general register",
+          "format": "FMOV <Wd|Xd>, <Sn|Dn>",
+          "description": "浮点寄存器与通用寄存器间移动",
+          "example": "fmov x0, d1"
+        }
+      ]
+    },
+    "simd": {
+      "arithmetic": [
+        {
+          "mnemonic": "add",
+          "name": "Vector Add",
+          "format": "ADD <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+          "description": "向量加法",
+          "example": "add v0.4s, v1.4s, v2.4s"
+        },
+        {
+          "mnemonic": "sub",
+          "name": "Vector Subtract",
+          "format": "SUB <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+          "description": "向量减法",
+          "example": "sub v0.4s, v1.4s, v2.4s"
+        },
+        {
+          "mnemonic": "mul",
+          "name": "Vector Multiply",
+          "format": "MUL <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+          "description": "向量乘法",
+          "example": "mul v0.4s, v1.4s, v2.4s"
+        },
+        {
+          "mnemonic": "mla",
+          "name": "Vector Multiply-Accumulate",
+          "format": "MLA <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+          "description": "向量乘累加，Vd = Vd + Vn * Vm",
+          "example": "mla v0.4s, v1.4s, v2.4s"
+        },
+        {
+          "mnemonic": "mls",
+          "name": "Vector Multiply-Subtract",
+          "format": "MLS <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+          "description": "向量乘减，Vd = Vd - Vn * Vm",
+          "example": "mls v0.4s, v1.4s, v2.4s"
+        }
+      ],
+      "logical": [
+        {
+          "mnemonic": "and",
+          "name": "Vector AND",
+          "format": "AND <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+          "description": "向量按位与",
+          "example": "and v0.16b, v1.16b, v2.16b"
+        },
+        {
+          "mnemonic": "orr",
+          "name": "Vector OR",
+          "format": "ORR <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+          "description": "向量按位或",
+          "example": "orr v0.16b, v1.16b, v2.16b"
+        },
+        {
+          "mnemonic": "eor",
+          "name": "Vector Exclusive OR",
+          "format": "EOR <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+          "description": "向量按位异或",
+          "example": "eor v0.16b, v1.16b, v2.16b"
+        }
+      ],
+      "load_store": [
+        {
+          "mnemonic": "ld1",
+          "name": "Load one single-element structure",
+          "format": "LD1 {<Vt>.<T>}, [<Xn|SP>]",
+          "description": "加载单个向量元素结构",
+          "example": "ld1 {v0.4s}, [x0]"
+        },
+        {
+          "mnemonic": "st1",
+          "name": "Store one single-element structure",
+          "format": "ST1 {<Vt>.<T>}, [<Xn|SP>]",
+          "description": "存储单个向量元素结构",
+          "example": "st1 {v0.4s}, [x0]"
+        },
+        {
+          "mnemonic": "ld2",
+          "name": "Load two single-element structures",
+          "format": "LD2 {<Vt>.<T>, <Vt2>.<T>}, [<Xn|SP>]",
+          "description": "加载两个向量元素结构",
+          "example": "ld2 {v0.4s, v1.4s}, [x0]"
+        },
+        {
+          "mnemonic": "st2",
+          "name": "Store two single-element structures",
+          "format": "ST2 {<Vt>.<T>, <Vt2>.<T>}, [<Xn|SP>]",
+          "description": "存储两个向量元素结构",
+          "example": "st2 {v0.4s, v1.4s}, [x0]"
+        }
+      ]
+    },
     "special_registers": [
       {
         "mnemonic": "mrs",
@@ -493,9 +1058,1058 @@
       "example": "ldr x0, [x1, w2, uxtw #3]"
     }
   ],
+  "atomic_operations": {
+    "load_store": [
+      {
+        "mnemonic": "ldadd",
+        "name": "Atomic Add",
+        "format": "LDADD <Xs>, <Xt>, [<Xn|SP>]",
+        "description": "原子加法，将Xs的值加到内存[Xn]，原值加载到Xt",
+        "flags_affected": [],
+        "example": "ldadd x1, x2, [x0]"
+      },
+      {
+        "mnemonic": "ldaddal",
+        "name": "Atomic Add (Acquire, Release)",
+        "format": "LDADDAL <Xs>, <Xt>, [<Xn|SP>]",
+        "description": "带获取-释放语义的原子加法",
+        "flags_affected": [],
+        "example": "ldaddal w1, w2, [x0]"
+      },
+      {
+        "mnemonic": "ldclr",
+        "name": "Atomic Clear",
+        "format": "LDCLR <Xs>, <Xt>, [<Xn|SP>]",
+        "description": "原子清除位，将[Xn] AND NOT Xs的结果存回内存，原值加载到Xt",
+        "flags_affected": [],
+        "example": "ldclr x1, x2, [x0]"
+      },
+      {
+        "mnemonic": "ldeor",
+        "name": "Atomic Exclusive OR",
+        "format": "LDEOR <Xs>, <Xt>, [<Xn|SP>]",
+        "description": "原子异或，将[Xn] XOR Xs的结果存回内存",
+        "flags_affected": [],
+        "example": "ldeor x1, x2, [x0]"
+      },
+      {
+        "mnemonic": "ldset",
+        "name": "Atomic Set",
+        "format": "LDSET <Xs>, <Xt>, [<Xn|SP>]",
+        "description": "原子置位，将[Xn] OR Xs的结果存回内存",
+        "flags_affected": [],
+        "example": "ldset x1, x2, [x0]"
+      },
+      {
+        "mnemonic": "swp",
+        "name": "Swap",
+        "format": "SWP <Xs>, <Xt>, [<Xn|SP>]",
+        "description": "原子交换，将Xs的值存入[Xn]，原值加载到Xt",
+        "flags_affected": [],
+        "example": "swp x1, x2, [x0]"
+      },
+      {
+        "mnemonic": "cas",
+        "name": "Compare and Swap",
+        "format": "CAS <Xs>, <Xt>, [<Xn|SP>]",
+        "description": "比较并交换，如果[Xn]等于Xs则将Xt存入[Xn]",
+        "flags_affected": [],
+        "example": "cas x1, x2, [x0]"
+      },
+      {
+        "mnemonic": "casal",
+        "name": "Compare and Swap (Acquire, Release)",
+        "format": "CASAL <Xs>, <Xt>, [<Xn|SP>]",
+        "description": "带获取-释放语义的比较并交换",
+        "flags_affected": [],
+        "example": "casal x1, x2, [x0]"
+      }
+    ]
+  },
+  "cryptographic": {
+    "aes": [
+      {
+        "mnemonic": "aese",
+        "name": "AES Encrypt",
+        "format": "AESE <Vd>.16B, <Vn>.16B",
+        "description": "AES单轮加密",
+        "flags_affected": [],
+        "example": "aese v0.16b, v1.16b"
+      },
+      {
+        "mnemonic": "aesd",
+        "name": "AES Decrypt",
+        "format": "AESD <Vd>.16B, <Vn>.16B",
+        "description": "AES单轮解密",
+        "flags_affected": [],
+        "example": "aesd v0.16b, v1.16b"
+      },
+      {
+        "mnemonic": "aesmc",
+        "name": "AES Mix Columns",
+        "format": "AESMC <Vd>.16B, <Vn>.16B",
+        "description": "AES列混合变换",
+        "flags_affected": [],
+        "example": "aesmc v0.16b, v1.16b"
+      },
+      {
+        "mnemonic": "aesimc",
+        "name": "AES Inverse Mix Columns",
+        "format": "AESIMC <Vd>.16B, <Vn>.16B",
+        "description": "AES逆列混合变换",
+        "flags_affected": [],
+        "example": "aesimc v0.16b, v1.16b"
+      }
+    ],
+    "sha": [
+      {
+        "mnemonic": "sha1c",
+        "name": "SHA1 Hash Update (Choose)",
+        "format": "SHA1C <Qd>, <Sn>, <Vm>.4S",
+        "description": "SHA1哈希更新（选择函数）",
+        "flags_affected": [],
+        "example": "sha1c q0, s1, v2.4s"
+      },
+      {
+        "mnemonic": "sha1h",
+        "name": "SHA1 Fixed Rotate",
+        "format": "SHA1H <Sd>, <Sn>",
+        "description": "SHA1固定旋转",
+        "flags_affected": [],
+        "example": "sha1h s0, s1"
+      },
+      {
+        "mnemonic": "sha1m",
+        "name": "SHA1 Hash Update (Majority)",
+        "format": "SHA1M <Qd>, <Sn>, <Vm>.4S",
+        "description": "SHA1哈希更新（多数函数）",
+        "flags_affected": [],
+        "example": "sha1m q0, s1, v2.4s"
+      },
+      {
+        "mnemonic": "sha1p",
+        "name": "SHA1 Hash Update (Parity)",
+        "format": "SHA1P <Qd>, <Sn>, <Vm>.4S",
+        "description": "SHA1哈希更新（奇偶函数）",
+        "flags_affected": [],
+        "example": "sha1p q0, s1, v2.4s"
+      },
+      {
+        "mnemonic": "sha256h",
+        "name": "SHA256 Hash Update Part 1",
+        "format": "SHA256H <Qd>, <Qn>, <Vm>.4S",
+        "description": "SHA256哈希更新第1部分",
+        "flags_affected": [],
+        "example": "sha256h q0, q1, v2.4s"
+      },
+      {
+        "mnemonic": "sha256h2",
+        "name": "SHA256 Hash Update Part 2",
+        "format": "SHA256H2 <Qd>, <Qn>, <Vm>.4S",
+        "description": "SHA256哈希更新第2部分",
+        "flags_affected": [],
+        "example": "sha256h2 q0, q1, v2.4s"
+      },
+      {
+        "mnemonic": "sha256su0",
+        "name": "SHA256 Schedule Update 0",
+        "format": "SHA256SU0 <Vd>.4S, <Vn>.4S",
+        "description": "SHA256消息调度更新0",
+        "flags_affected": [],
+        "example": "sha256su0 v0.4s, v1.4s"
+      },
+      {
+        "mnemonic": "sha256su1",
+        "name": "SHA256 Schedule Update 1",
+        "format": "SHA256SU1 <Vd>.4S, <Vn>.4S, <Vm>.4S",
+        "description": "SHA256消息调度更新1",
+        "flags_affected": [],
+        "example": "sha256su1 v0.4s, v1.4s, v2.4s"
+      }
+    ]
+  },
+  "crc": [
+    {
+      "mnemonic": "crc32b",
+      "name": "CRC32 Byte",
+      "format": "CRC32B <Wd>, <Wn>, <Wm>",
+      "description": "CRC32校验（字节）",
+      "flags_affected": [],
+      "example": "crc32b w0, w1, w2"
+    },
+    {
+      "mnemonic": "crc32h",
+      "name": "CRC32 Halfword",
+      "format": "CRC32H <Wd>, <Wn>, <Wm>",
+      "description": "CRC32校验（半字）",
+      "flags_affected": [],
+      "example": "crc32h w0, w1, w2"
+    },
+    {
+      "mnemonic": "crc32w",
+      "name": "CRC32 Word",
+      "format": "CRC32W <Wd>, <Wn>, <Wm>",
+      "description": "CRC32校验（字）",
+      "flags_affected": [],
+      "example": "crc32w w0, w1, w2"
+    },
+    {
+      "mnemonic": "crc32x",
+      "name": "CRC32 Doubleword",
+      "format": "CRC32X <Wd>, <Wn>, <Xm>",
+      "description": "CRC32校验（双字）",
+      "flags_affected": [],
+      "example": "crc32x w0, w1, x2"
+    },
+    {
+      "mnemonic": "crc32cb",
+      "name": "CRC32C Byte",
+      "format": "CRC32CB <Wd>, <Wn>, <Wm>",
+      "description": "CRC32C校验（字节）Castagnoli多项式",
+      "flags_affected": [],
+      "example": "crc32cb w0, w1, w2"
+    }
+  ],
+  "advanced_simd": {
+    "reduction": [
+      {
+        "mnemonic": "addv",
+        "name": "Add across Vector",
+        "format": "ADDV <V><d>, <Vn>.<T>",
+        "description": "向量元素求和归约",
+        "flags_affected": [],
+        "example": "addv s0, v1.4s"
+      },
+      {
+        "mnemonic": "smaxv",
+        "name": "Signed Maximum across Vector",
+        "format": "SMAXV <V><d>, <Vn>.<T>",
+        "description": "有符号向量元素求最大值",
+        "flags_affected": [],
+        "example": "smaxv s0, v1.4s"
+      },
+      {
+        "mnemonic": "sminv",
+        "name": "Signed Minimum across Vector",
+        "format": "SMINV <V><d>, <Vn>.<T>",
+        "description": "有符号向量元素求最小值",
+        "flags_affected": [],
+        "example": "sminv s0, v1.4s"
+      },
+      {
+        "mnemonic": "umaxv",
+        "name": "Unsigned Maximum across Vector",
+        "format": "UMAXV <V><d>, <Vn>.<T>",
+        "description": "无符号向量元素求最大值",
+        "flags_affected": [],
+        "example": "umaxv s0, v1.4s"
+      }
+    ],
+    "permute": [
+      {
+        "mnemonic": "ext",
+        "name": "Extract",
+        "format": "EXT <Vd>.<T>, <Vn>.<T>, <Vm>.<T>, #<index>",
+        "description": "从两个向量中提取元素并连接",
+        "flags_affected": [],
+        "example": "ext v0.16b, v1.16b, v2.16b, #4"
+      },
+      {
+        "mnemonic": "zip1",
+        "name": "Zip vectors (primary)",
+        "format": "ZIP1 <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "交错合并向量（低半部分）",
+        "flags_affected": [],
+        "example": "zip1 v0.4s, v1.4s, v2.4s"
+      },
+      {
+        "mnemonic": "zip2",
+        "name": "Zip vectors (secondary)",
+        "format": "ZIP2 <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "交错合并向量（高半部分）",
+        "flags_affected": [],
+        "example": "zip2 v0.4s, v1.4s, v2.4s"
+      },
+      {
+        "mnemonic": "uzp1",
+        "name": "Unzip vectors (primary)",
+        "format": "UZP1 <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "解交错向量（偶数元素）",
+        "flags_affected": [],
+        "example": "uzp1 v0.4s, v1.4s, v2.4s"
+      },
+      {
+        "mnemonic": "trn1",
+        "name": "Transpose vectors (primary)",
+        "format": "TRN1 <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "转置向量（第1部分）",
+        "flags_affected": [],
+        "example": "trn1 v0.4s, v1.4s, v2.4s"
+      }
+    ],
+    "table_lookup": [
+      {
+        "mnemonic": "tbl",
+        "name": "Table Lookup",
+        "format": "TBL <Vd>.<Ta>, {<Vn>.16B, ...}, <Vm>.<Ta>",
+        "description": "表查找，根据索引从表中查找元素",
+        "flags_affected": [],
+        "example": "tbl v0.16b, {v1.16b, v2.16b}, v3.16b"
+      },
+      {
+        "mnemonic": "tbx",
+        "name": "Table Lookup Extension",
+        "format": "TBX <Vd>.<Ta>, {<Vn>.16B, ...}, <Vm>.<Ta>",
+        "description": "表查找扩展，索引越界时保留原值",
+        "flags_affected": [],
+        "example": "tbx v0.16b, {v1.16b}, v2.16b"
+      }
+    ]
+  },
+  "pointer_authentication": [
+    {
+      "mnemonic": "pacia",
+      "name": "Pointer Authentication Code for Instruction address",
+      "format": "PACIA <Xd>, <Xn|SP>",
+      "description": "为指令地址生成指针认证码",
+      "flags_affected": [],
+      "example": "pacia x0, x1"
+    },
+    {
+      "mnemonic": "pacda",
+      "name": "Pointer Authentication Code for Data address",
+      "format": "PACDA <Xd>, <Xn|SP>",
+      "description": "为数据地址生成指针认证码",
+      "flags_affected": [],
+      "example": "pacda x0, x1"
+    },
+    {
+      "mnemonic": "autia",
+      "name": "Authenticate Instruction address",
+      "format": "AUTIA <Xd>, <Xn|SP>",
+      "description": "验证指令地址的指针认证码",
+      "flags_affected": [],
+      "example": "autia x0, x1"
+    },
+    {
+      "mnemonic": "autda",
+      "name": "Authenticate Data address",
+      "format": "AUTDA <Xd>, <Xn|SP>",
+      "description": "验证数据地址的指针认证码",
+      "flags_affected": [],
+      "example": "autda x0, x1"
+    }
+  ],
+  "memory_tagging": [
+    {
+      "mnemonic": "irg",
+      "name": "Insert Random Tag",
+      "format": "IRG <Xd|SP>, <Xn|SP>{, <Xm>}",
+      "description": "插入随机内存标签",
+      "flags_affected": [],
+      "example": "irg x0, x1"
+    },
+    {
+      "mnemonic": "gmi",
+      "name": "Tag Mask Insert",
+      "format": "GMI <Xd>, <Xn|SP>, <Xm>",
+      "description": "插入标签掩码",
+      "flags_affected": [],
+      "example": "gmi x0, x1, x2"
+    },
+    {
+      "mnemonic": "ldg",
+      "name": "Load Allocation Tag",
+      "format": "LDG <Xt>, [<Xn|SP>{, #<simm>}]",
+      "description": "加载内存分配标签",
+      "flags_affected": [],
+      "example": "ldg x0, [x1]"
+    },
+    {
+      "mnemonic": "stg",
+      "name": "Store Allocation Tag",
+      "format": "STG [<Xn|SP>], #<simm>",
+      "description": "存储内存分配标签",
+      "flags_affected": [],
+      "example": "stg [x0], #16"
+    }
+  ],
+  "conditional_operations": {
+    "name": "条件操作指令",
+    "description": "根据条件标志位执行选择、递增、取反等操作",
+    "instructions": [
+      {
+        "mnemonic": "csel",
+        "name": "Conditional Select",
+        "format": "CSEL <Xd|Wd>, <Xn|Wn>, <Xm|Wm>, <cond>",
+        "description": "条件选择，如果条件为真选择Xn，否则选择Xm",
+        "flags_affected": [],
+        "example": "csel x0, x1, x2, eq"
+      },
+      {
+        "mnemonic": "csinc",
+        "name": "Conditional Select Increment",
+        "format": "CSINC <Xd|Wd>, <Xn|Wn>, <Xm|Wm>, <cond>",
+        "description": "条件选择并递增，如果条件为真选择Xn，否则选择Xm+1",
+        "flags_affected": [],
+        "example": "csinc x0, x1, x2, ne"
+      },
+      {
+        "mnemonic": "csinv",
+        "name": "Conditional Select Invert",
+        "format": "CSINV <Xd|Wd>, <Xn|Wn>, <Xm|Wm>, <cond>",
+        "description": "条件选择并取反，如果条件为真选择Xn，否则选择NOT Xm",
+        "flags_affected": [],
+        "example": "csinv x0, x1, x2, gt"
+      },
+      {
+        "mnemonic": "csneg",
+        "name": "Conditional Select Negate",
+        "format": "CSNEG <Xd|Wd>, <Xn|Wn>, <Xm|Wm>, <cond>",
+        "description": "条件选择并取负，如果条件为真选择Xn，否则选择-Xm",
+        "flags_affected": [],
+        "example": "csneg x0, x1, x2, lt"
+      },
+      {
+        "mnemonic": "cset",
+        "name": "Conditional Set",
+        "format": "CSET <Xd|Wd>, <cond>",
+        "description": "条件设置，如果条件为真设置为1，否则为0（CSINC的别名）",
+        "flags_affected": [],
+        "example": "cset w0, eq"
+      },
+      {
+        "mnemonic": "csetm",
+        "name": "Conditional Set Mask",
+        "format": "CSETM <Xd|Wd>, <cond>",
+        "description": "条件设置掩码，如果条件为真设置为全1，否则为0（CSINV的别名）",
+        "flags_affected": [],
+        "example": "csetm x0, ne"
+      },
+      {
+        "mnemonic": "cinc",
+        "name": "Conditional Increment",
+        "format": "CINC <Xd|Wd>, <Xn|Wn>, <cond>",
+        "description": "条件递增，如果条件为真则Xd=Xn+1，否则Xd=Xn（CSINC的别名）",
+        "flags_affected": [],
+        "example": "cinc w0, w1, eq"
+      },
+      {
+        "mnemonic": "cinv",
+        "name": "Conditional Invert",
+        "format": "CINV <Xd|Wd>, <Xn|Wn>, <cond>",
+        "description": "条件取反，如果条件为真则Xd=NOT Xn，否则Xd=Xn（CSINV的别名）",
+        "flags_affected": [],
+        "example": "cinv x0, x1, ne"
+      },
+      {
+        "mnemonic": "cneg",
+        "name": "Conditional Negate",
+        "format": "CNEG <Xd|Wd>, <Xn|Wn>, <cond>",
+        "description": "条件取负，如果条件为真则Xd=-Xn，否则Xd=Xn（CSNEG的别名）",
+        "flags_affected": [],
+        "example": "cneg w0, w1, lt"
+      },
+      {
+        "mnemonic": "ccmp",
+        "name": "Conditional Compare",
+        "format": "CCMP <Xn|Wn>, <Xm|Wm|#imm>, #<nzcv>, <cond>",
+        "description": "条件比较，如果条件为真则比较Xn和Xm并设置标志位，否则设置nzcv标志",
+        "flags_affected": ["N", "Z", "C", "V"],
+        "example": "ccmp x0, x1, #0, eq"
+      },
+      {
+        "mnemonic": "ccmn",
+        "name": "Conditional Compare Negative",
+        "format": "CCMN <Xn|Wn>, <Xm|Wm|#imm>, #<nzcv>, <cond>",
+        "description": "条件负比较，如果条件为真则比较Xn和-Xm并设置标志位，否则设置nzcv标志",
+        "flags_affected": ["N", "Z", "C", "V"],
+        "example": "ccmn x0, x1, #0, ne"
+      }
+    ]
+  },
+  "pc_relative_addressing": {
+    "name": "PC相对地址计算",
+    "description": "基于程序计数器计算地址，用于访问全局数据和位置无关代码",
+    "instructions": [
+      {
+        "mnemonic": "adr",
+        "name": "Address to Register",
+        "format": "ADR <Xd>, <label>",
+        "description": "将PC相对地址加载到寄存器（±1MB范围）",
+        "flags_affected": [],
+        "example": "adr x0, data_label"
+      },
+      {
+        "mnemonic": "adrp",
+        "name": "Address of Page to Register",
+        "format": "ADRP <Xd>, <label>",
+        "description": "将PC相对页地址（4KB对齐）加载到寄存器（±4GB范围），常用于访问GOT/PLT",
+        "flags_affected": [],
+        "example": "adrp x0, _GLOBAL_OFFSET_TABLE_"
+      }
+    ]
+  },
+  "bitfield_operations": {
+    "name": "位域操作指令",
+    "description": "高效的位域提取、插入和操作",
+    "instructions": [
+      {
+        "mnemonic": "ubfiz",
+        "name": "Unsigned Bitfield Insert in Zero",
+        "format": "UBFIZ <Xd|Wd>, <Xn|Wn>, #<lsb>, #<width>",
+        "description": "无符号位域插入零，从Xn的低位提取width位，左移lsb位后插入Xd，其余位清零",
+        "flags_affected": [],
+        "example": "ubfiz w0, w1, #3, #5"
+      },
+      {
+        "mnemonic": "sbfiz",
+        "name": "Signed Bitfield Insert in Zero",
+        "format": "SBFIZ <Xd|Wd>, <Xn|Wn>, #<lsb>, #<width>",
+        "description": "有符号位域插入零，从Xn的低位提取width位（符号扩展），左移lsb位后插入Xd",
+        "flags_affected": [],
+        "example": "sbfiz w0, w1, #2, #8"
+      },
+      {
+        "mnemonic": "extr",
+        "name": "Extract Register",
+        "format": "EXTR <Xd|Wd>, <Xn|Wn>, <Xm|Wm>, #<lsb>",
+        "description": "从两个寄存器拼接的值中提取位域，Xd = (Xn:Xm) >> lsb",
+        "flags_affected": [],
+        "example": "extr x0, x1, x2, #8"
+      }
+    ]
+  },
+  "floating_point_advanced": {
+    "name": "浮点高级指令",
+    "description": "浮点融合乘加、转换、取整等高性能指令",
+    "instructions": [
+      {
+        "mnemonic": "fmla",
+        "name": "Floating-point Fused Multiply-Add",
+        "format": "FMLA <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "浮点融合乘加，Vd = Vd + Vn * Vm（向量或标量），单指令高精度",
+        "flags_affected": [],
+        "example": "fmla v0.4s, v1.4s, v2.4s"
+      },
+      {
+        "mnemonic": "fmls",
+        "name": "Floating-point Fused Multiply-Subtract",
+        "format": "FMLS <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "浮点融合乘减，Vd = Vd - Vn * Vm（向量或标量）",
+        "flags_affected": [],
+        "example": "fmls v0.2d, v1.2d, v2.2d"
+      },
+      {
+        "mnemonic": "fmin",
+        "name": "Floating-point Minimum",
+        "format": "FMIN <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "浮点最小值，选择两个浮点数中的较小值",
+        "flags_affected": [],
+        "example": "fmin v0.4s, v1.4s, v2.4s"
+      },
+      {
+        "mnemonic": "fmax",
+        "name": "Floating-point Maximum",
+        "format": "FMAX <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "浮点最大值，选择两个浮点数中的较大值",
+        "flags_affected": [],
+        "example": "fmax v0.2d, v1.2d, v2.2d"
+      },
+      {
+        "mnemonic": "fminnm",
+        "name": "Floating-point Minimum Number",
+        "format": "FMINNM <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "浮点最小值（优先选择非NaN值）",
+        "flags_affected": [],
+        "example": "fminnm d0, d1, d2"
+      },
+      {
+        "mnemonic": "fmaxnm",
+        "name": "Floating-point Maximum Number",
+        "format": "FMAXNM <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "浮点最大值（优先选择非NaN值）",
+        "flags_affected": [],
+        "example": "fmaxnm s0, s1, s2"
+      },
+      {
+        "mnemonic": "fcvtas",
+        "name": "Floating-point Convert to Signed (Round to Nearest)",
+        "format": "FCVTAS <Xd|Wd>, <Vn>.<T>",
+        "description": "浮点转有符号整数（四舍五入到最近）",
+        "flags_affected": [],
+        "example": "fcvtas w0, s1"
+      },
+      {
+        "mnemonic": "fcvtau",
+        "name": "Floating-point Convert to Unsigned (Round to Nearest)",
+        "format": "FCVTAU <Xd|Wd>, <Vn>.<T>",
+        "description": "浮点转无符号整数（四舍五入到最近）",
+        "flags_affected": [],
+        "example": "fcvtau x0, d1"
+      },
+      {
+        "mnemonic": "fcvtms",
+        "name": "Floating-point Convert to Signed (Round towards -∞)",
+        "format": "FCVTMS <Xd|Wd>, <Vn>.<T>",
+        "description": "浮点转有符号整数（向下舍入）",
+        "flags_affected": [],
+        "example": "fcvtms w0, s1"
+      },
+      {
+        "mnemonic": "fcvtmu",
+        "name": "Floating-point Convert to Unsigned (Round towards -∞)",
+        "format": "FCVTMU <Xd|Wd>, <Vn>.<T>",
+        "description": "浮点转无符号整数（向下舍入）",
+        "flags_affected": [],
+        "example": "fcvtmu x0, d1"
+      },
+      {
+        "mnemonic": "fcvtns",
+        "name": "Floating-point Convert to Signed (Round to Nearest, ties to Even)",
+        "format": "FCVTNS <Xd|Wd>, <Vn>.<T>",
+        "description": "浮点转有符号整数（四舍五入，偶数舍入）",
+        "flags_affected": [],
+        "example": "fcvtns w0, s1"
+      },
+      {
+        "mnemonic": "fcvtnu",
+        "name": "Floating-point Convert to Unsigned (Round to Nearest, ties to Even)",
+        "format": "FCVTNU <Xd|Wd>, <Vn>.<T>",
+        "description": "浮点转无符号整数（四舍五入，偶数舍入）",
+        "flags_affected": [],
+        "example": "fcvtnu x0, d1"
+      },
+      {
+        "mnemonic": "fcvtps",
+        "name": "Floating-point Convert to Signed (Round towards +∞)",
+        "format": "FCVTPS <Xd|Wd>, <Vn>.<T>",
+        "description": "浮点转有符号整数（向上舍入）",
+        "flags_affected": [],
+        "example": "fcvtps w0, s1"
+      },
+      {
+        "mnemonic": "fcvtpu",
+        "name": "Floating-point Convert to Unsigned (Round towards +∞)",
+        "format": "FCVTPU <Xd|Wd>, <Vn>.<T>",
+        "description": "浮点转无符号整数（向上舍入）",
+        "flags_affected": [],
+        "example": "fcvtpu x0, d1"
+      },
+      {
+        "mnemonic": "frinta",
+        "name": "Floating-point Round to Integral (Round to Nearest)",
+        "format": "FRINTA <Vd>.<T>, <Vn>.<T>",
+        "description": "浮点取整（四舍五入到最近整数）",
+        "flags_affected": [],
+        "example": "frinta d0, d1"
+      },
+      {
+        "mnemonic": "frinti",
+        "name": "Floating-point Round to Integral (Current rounding mode)",
+        "format": "FRINTI <Vd>.<T>, <Vn>.<T>",
+        "description": "浮点取整（使用当前舍入模式）",
+        "flags_affected": [],
+        "example": "frinti s0, s1"
+      },
+      {
+        "mnemonic": "frintm",
+        "name": "Floating-point Round to Integral (Round towards -∞)",
+        "format": "FRINTM <Vd>.<T>, <Vn>.<T>",
+        "description": "浮点取整（向下舍入到整数）",
+        "flags_affected": [],
+        "example": "frintm v0.4s, v1.4s"
+      },
+      {
+        "mnemonic": "frintn",
+        "name": "Floating-point Round to Integral (Round to Nearest, ties to Even)",
+        "format": "FRINTN <Vd>.<T>, <Vn>.<T>",
+        "description": "浮点取整（四舍五入，偶数舍入）",
+        "flags_affected": [],
+        "example": "frintn d0, d1"
+      },
+      {
+        "mnemonic": "frintp",
+        "name": "Floating-point Round to Integral (Round towards +∞)",
+        "format": "FRINTP <Vd>.<T>, <Vn>.<T>",
+        "description": "浮点取整（向上舍入到整数）",
+        "flags_affected": [],
+        "example": "frintp s0, s1"
+      },
+      {
+        "mnemonic": "frintx",
+        "name": "Floating-point Round to Integral Exact",
+        "format": "FRINTX <Vd>.<T>, <Vn>.<T>",
+        "description": "浮点精确取整（可能引发不精确异常）",
+        "flags_affected": [],
+        "example": "frintx d0, d1"
+      },
+      {
+        "mnemonic": "frintz",
+        "name": "Floating-point Round to Integral (Round towards Zero)",
+        "format": "FRINTZ <Vd>.<T>, <Vn>.<T>",
+        "description": "浮点取整（向零舍入，截断）",
+        "flags_affected": [],
+        "example": "frintz v0.2d, v1.2d"
+      }
+    ]
+  },
+  "simd_data_processing": {
+    "name": "SIMD 数据处理指令",
+    "description": "向量元素操作、累加、最值等高级 SIMD 指令",
+    "instructions": [
+      {
+        "mnemonic": "uaddlv",
+        "name": "Unsigned Add Long across Vector",
+        "format": "UADDLV <Vd>, <Vn>.<T>",
+        "description": "无符号向量累加（扩展），将向量所有元素累加到标量寄存器",
+        "flags_affected": [],
+        "example": "uaddlv h0, v1.8b"
+      },
+      {
+        "mnemonic": "saddlv",
+        "name": "Signed Add Long across Vector",
+        "format": "SADDLV <Vd>, <Vn>.<T>",
+        "description": "有符号向量累加（扩展），将向量所有元素累加到标量寄存器",
+        "flags_affected": [],
+        "example": "saddlv s0, v1.4h"
+      },
+      {
+        "mnemonic": "uminv",
+        "name": "Unsigned Minimum across Vector",
+        "format": "UMINV <Vd>, <Vn>.<T>",
+        "description": "无符号向量最小值，从向量中找出最小元素",
+        "flags_affected": [],
+        "example": "uminv b0, v1.16b"
+      },
+      {
+        "mnemonic": "ins",
+        "name": "Insert vector element from general-purpose register",
+        "format": "INS <Vd>.<Ts>[<index>], <Wn|Xn>",
+        "description": "从通用寄存器插入元素到向量的指定位置",
+        "flags_affected": [],
+        "example": "ins v0.s[1], w1"
+      },
+      {
+        "mnemonic": "dup",
+        "name": "Duplicate vector element",
+        "format": "DUP <Vd>.<T>, <Vn>.<Ts>[<index>]",
+        "description": "复制向量元素或标量到整个向量",
+        "flags_affected": [],
+        "example": "dup v0.4s, w1"
+      },
+      {
+        "mnemonic": "uzp2",
+        "name": "Unzip vectors (even elements)",
+        "format": "UZP2 <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "向量解交错（提取偶数位置元素）",
+        "flags_affected": [],
+        "example": "uzp2 v0.8b, v1.8b, v2.8b"
+      },
+      {
+        "mnemonic": "trn2",
+        "name": "Transpose vectors (odd elements)",
+        "format": "TRN2 <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "向量转置（提取奇数位置元素）",
+        "flags_affected": [],
+        "example": "trn2 v0.4s, v1.4s, v2.4s"
+      },
+      {
+        "mnemonic": "cnt",
+        "name": "Population Count per byte",
+        "format": "CNT <Vd>.<T>, <Vn>.<T>",
+        "description": "按字节统计1的个数（popcount），常用于位操作优化",
+        "flags_affected": [],
+        "example": "cnt v0.8b, v1.8b"
+      },
+      {
+        "mnemonic": "sqadd",
+        "name": "Signed saturating Add",
+        "format": "SQADD <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "有符号饱和加法，溢出时钳位到最大/最小值",
+        "flags_affected": [],
+        "example": "sqadd v0.8h, v1.8h, v2.8h"
+      },
+      {
+        "mnemonic": "uqadd",
+        "name": "Unsigned saturating Add",
+        "format": "UQADD <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "无符号饱和加法，溢出时钳位到最大值",
+        "flags_affected": [],
+        "example": "uqadd v0.16b, v1.16b, v2.16b"
+      },
+      {
+        "mnemonic": "sqsub",
+        "name": "Signed saturating Subtract",
+        "format": "SQSUB <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "有符号饱和减法，溢出时钳位到最大/最小值",
+        "flags_affected": [],
+        "example": "sqsub v0.4s, v1.4s, v2.4s"
+      },
+      {
+        "mnemonic": "uqsub",
+        "name": "Unsigned saturating Subtract",
+        "format": "UQSUB <Vd>.<T>, <Vn>.<T>, <Vm>.<T>",
+        "description": "无符号饱和减法，下溢时钳位到0",
+        "flags_affected": [],
+        "example": "uqsub v0.2d, v1.2d, v2.2d"
+      },
+      {
+        "mnemonic": "shl",
+        "name": "Shift Left",
+        "format": "SHL <Vd>.<T>, <Vn>.<T>, #<shift>",
+        "description": "向量逻辑左移，每个元素左移指定位数",
+        "flags_affected": [],
+        "example": "shl v0.4s, v1.4s, #3"
+      },
+      {
+        "mnemonic": "sshr",
+        "name": "Signed Shift Right",
+        "format": "SSHR <Vd>.<T>, <Vn>.<T>, #<shift>",
+        "description": "向量有符号右移（算术移位）",
+        "flags_affected": [],
+        "example": "sshr v0.8h, v1.8h, #2"
+      },
+      {
+        "mnemonic": "ushr",
+        "name": "Unsigned Shift Right",
+        "format": "USHR <Vd>.<T>, <Vn>.<T>, #<shift>",
+        "description": "向量无符号右移（逻辑移位）",
+        "flags_affected": [],
+        "example": "ushr v0.16b, v1.16b, #4"
+      },
+      {
+        "mnemonic": "sxtl",
+        "name": "Signed Extend Long",
+        "format": "SXTL <Vd>.<Ta>, <Vn>.<Tb>",
+        "description": "有符号扩展（窄元素扩展为宽元素）",
+        "flags_affected": [],
+        "example": "sxtl v0.8h, v1.8b"
+      },
+      {
+        "mnemonic": "uxtl",
+        "name": "Unsigned Extend Long",
+        "format": "UXTL <Vd>.<Ta>, <Vn>.<Tb>",
+        "description": "无符号扩展（窄元素扩展为宽元素）",
+        "flags_affected": [],
+        "example": "uxtl v0.4s, v1.4h"
+      }
+    ]
+  },
+  "atomic_operations_extended": {
+    "name": "原子操作扩展指令",
+    "description": "字节、半字级别的原子操作和不返回值的原子操作",
+    "instructions": [
+      {
+        "mnemonic": "ldaddh",
+        "name": "Atomic Add (Halfword)",
+        "format": "LDADDH <Ws>, <Wt>, [<Xn|SP>]",
+        "description": "原子加法（半字），将Ws的值加到内存[Xn]，原值加载到Wt",
+        "flags_affected": [],
+        "example": "ldaddh w1, w2, [x0]"
+      },
+      {
+        "mnemonic": "ldaddb",
+        "name": "Atomic Add (Byte)",
+        "format": "LDADDB <Ws>, <Wt>, [<Xn|SP>]",
+        "description": "原子加法（字节），将Ws的值加到内存[Xn]，原值加载到Wt",
+        "flags_affected": [],
+        "example": "ldaddb w1, w2, [x0]"
+      },
+      {
+        "mnemonic": "ldaddlh",
+        "name": "Atomic Add (Halfword, Release)",
+        "format": "LDADDLH <Ws>, <Wt>, [<Xn|SP>]",
+        "description": "原子加法（半字，带释放语义）",
+        "flags_affected": [],
+        "example": "ldaddlh w1, w2, [x0]"
+      },
+      {
+        "mnemonic": "ldaddlb",
+        "name": "Atomic Add (Byte, Release)",
+        "format": "LDADDLB <Ws>, <Wt>, [<Xn|SP>]",
+        "description": "原子加法（字节，带释放语义）",
+        "flags_affected": [],
+        "example": "ldaddlb w1, w2, [x0]"
+      },
+      {
+        "mnemonic": "casa",
+        "name": "Compare and Swap (Acquire)",
+        "format": "CASA <Ws|Xs>, <Wt|Xt>, [<Xn|SP>]",
+        "description": "比较并交换（带获取语义）",
+        "flags_affected": [],
+        "example": "casa w1, w2, [x0]"
+      },
+      {
+        "mnemonic": "casb",
+        "name": "Compare and Swap Byte",
+        "format": "CASB <Ws>, <Wt>, [<Xn|SP>]",
+        "description": "比较并交换（字节）",
+        "flags_affected": [],
+        "example": "casb w1, w2, [x0]"
+      },
+      {
+        "mnemonic": "cash",
+        "name": "Compare and Swap Halfword",
+        "format": "CASH <Ws>, <Wt>, [<Xn|SP>]",
+        "description": "比较并交换（半字）",
+        "flags_affected": [],
+        "example": "cash w1, w2, [x0]"
+      },
+      {
+        "mnemonic": "casp",
+        "name": "Compare and Swap Pair",
+        "format": "CASP <Ws>, <Ws+1>, <Wt>, <Wt+1>, [<Xn|SP>]",
+        "description": "比较并交换寄存器对（128位原子操作）",
+        "flags_affected": [],
+        "example": "casp x0, x1, x2, x3, [x4]"
+      },
+      {
+        "mnemonic": "stadd",
+        "name": "Atomic Add (no return)",
+        "format": "STADD <Ws|Xs>, [<Xn|SP>]",
+        "description": "原子加法（不返回原值），将Ws的值加到内存[Xn]",
+        "flags_affected": [],
+        "example": "stadd w1, [x0]"
+      },
+      {
+        "mnemonic": "staddl",
+        "name": "Atomic Add (no return, Release)",
+        "format": "STADDL <Ws|Xs>, [<Xn|SP>]",
+        "description": "原子加法（不返回原值，带释放语义）",
+        "flags_affected": [],
+        "example": "staddl w1, [x0]"
+      },
+      {
+        "mnemonic": "staddb",
+        "name": "Atomic Add Byte (no return)",
+        "format": "STADDB <Ws>, [<Xn|SP>]",
+        "description": "原子加法（字节，不返回原值）",
+        "flags_affected": [],
+        "example": "staddb w1, [x0]"
+      },
+      {
+        "mnemonic": "staddh",
+        "name": "Atomic Add Halfword (no return)",
+        "format": "STADDH <Ws>, [<Xn|SP>]",
+        "description": "原子加法（半字，不返回原值）",
+        "flags_affected": [],
+        "example": "staddh w1, [x0]"
+      }
+    ]
+  },
+  "load_store_exclusive_extended": {
+    "name": "加载/存储独占扩展",
+    "description": "独占访问指令的字节、半字变体，用于实现细粒度原子操作",
+    "instructions": [
+      {
+        "mnemonic": "ldxrb",
+        "name": "Load Exclusive Register Byte",
+        "format": "LDXRB <Wt>, [<Xn|SP>]",
+        "description": "独占加载（字节），标记内存为独占访问",
+        "flags_affected": [],
+        "example": "ldxrb w0, [x1]"
+      },
+      {
+        "mnemonic": "ldxrh",
+        "name": "Load Exclusive Register Halfword",
+        "format": "LDXRH <Wt>, [<Xn|SP>]",
+        "description": "独占加载（半字），标记内存为独占访问",
+        "flags_affected": [],
+        "example": "ldxrh w0, [x1]"
+      },
+      {
+        "mnemonic": "stxrb",
+        "name": "Store Exclusive Register Byte",
+        "format": "STXRB <Ws>, <Wt>, [<Xn|SP>]",
+        "description": "独占存储（字节），如果独占访问成功则Ws=0，否则Ws=1",
+        "flags_affected": [],
+        "example": "stxrb w0, w1, [x2]"
+      },
+      {
+        "mnemonic": "stxrh",
+        "name": "Store Exclusive Register Halfword",
+        "format": "STXRH <Ws>, <Wt>, [<Xn|SP>]",
+        "description": "独占存储（半字），如果独占访问成功则Ws=0，否则Ws=1",
+        "flags_affected": [],
+        "example": "stxrh w0, w1, [x2]"
+      },
+      {
+        "mnemonic": "ldaxrb",
+        "name": "Load-Acquire Exclusive Register Byte",
+        "format": "LDAXRB <Wt>, [<Xn|SP>]",
+        "description": "独占加载（字节，带获取语义）",
+        "flags_affected": [],
+        "example": "ldaxrb w0, [x1]"
+      },
+      {
+        "mnemonic": "ldaxrh",
+        "name": "Load-Acquire Exclusive Register Halfword",
+        "format": "LDAXRH <Wt>, [<Xn|SP>]",
+        "description": "独占加载（半字，带获取语义）",
+        "flags_affected": [],
+        "example": "ldaxrh w0, [x1]"
+      },
+      {
+        "mnemonic": "stlxrb",
+        "name": "Store-Release Exclusive Register Byte",
+        "format": "STLXRB <Ws>, <Wt>, [<Xn|SP>]",
+        "description": "独占存储（字节，带释放语义）",
+        "flags_affected": [],
+        "example": "stlxrb w0, w1, [x2]"
+      },
+      {
+        "mnemonic": "stlxrh",
+        "name": "Store-Release Exclusive Register Halfword",
+        "format": "STLXRH <Ws>, <Wt>, [<Xn|SP>]",
+        "description": "独占存储（半字，带释放语义）",
+        "flags_affected": [],
+        "example": "stlxrh w0, w1, [x2]"
+      },
+      {
+        "mnemonic": "ldxp",
+        "name": "Load Exclusive Pair",
+        "format": "LDXP <Wt1>, <Wt2>, [<Xn|SP>]",
+        "description": "独占加载寄存器对（128位原子操作）",
+        "flags_affected": [],
+        "example": "ldxp x0, x1, [x2]"
+      },
+      {
+        "mnemonic": "stxp",
+        "name": "Store Exclusive Pair",
+        "format": "STXP <Ws>, <Wt1>, <Wt2>, [<Xn|SP>]",
+        "description": "独占存储寄存器对（128位原子操作）",
+        "flags_affected": [],
+        "example": "stxp w0, x1, x2, [x3]"
+      }
+    ]
+  },
+  "exception_handling": {
+    "name": "异常处理指令",
+    "description": "异常返回和调试相关指令",
+    "instructions": [
+      {
+        "mnemonic": "eret",
+        "name": "Exception Return",
+        "format": "ERET",
+        "description": "从异常返回，恢复SPSR_ELx到PSTATE，跳转到ELR_ELx",
+        "flags_affected": ["N", "Z", "C", "V"],
+        "example": "eret"
+      },
+      {
+        "mnemonic": "drps",
+        "name": "Debug Restore Process State",
+        "format": "DRPS",
+        "description": "调试状态恢复，从调试异常返回",
+        "flags_affected": ["N", "Z", "C", "V"],
+        "example": "drps"
+      }
+    ]
+  },
   "instruction_encoding": {
     "description": "AArch64 指令编码为 32 位定长指令",
     "format": "每条指令占用 4 字节（32位）",
     "endianness": "小端序（Little-endian）"
   }
 }
+
