@@ -17,9 +17,9 @@
 *.out
 
 # Markdown files (allow important documentation)
-CHANGELOG.md
 !*.md
 !README.md
+CHANGELOG.md
 
 # Test coverage
 *.profraw
