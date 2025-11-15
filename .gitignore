@@ -15,7 +15,10 @@
 *.dump
 *.o
 *.out
-*.md
+
+# Markdown files (allow important documentation)
+CHANGELOG.md
+!*.md
 !README.md
 
 # Test coverage
